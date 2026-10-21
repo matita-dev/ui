@@ -13,7 +13,8 @@
   "files": ["dist"],
   "scripts": {
     "build": "node scripts/build.mjs",
-    "demo": "node scripts/build.mjs --demo"
+    "demo": "node scripts/build.mjs --demo",
+    "test": "node --test"
   },
   "peerDependencies": {
     "@matita/icons": ">=0.4.0",
