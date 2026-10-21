@@ -3,3 +3,7 @@ export { Sketch } from './sketch.jsx';
 export { Button, IconButton } from './button.jsx';
 export { Input } from './input.jsx';
 export { Checkbox } from './checkbox.jsx';
+export { Textarea } from './textarea.jsx';
+export { Select } from './select.jsx';
+export { Radio } from './radio.jsx';
+export { Switch } from './switch.jsx';

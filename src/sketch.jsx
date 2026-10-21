@@ -26,7 +26,9 @@ export function Sketch({ shape = 'rect', radius = 0, seed = 0, fill = false, rou
   return (
     <svg ref={ref} className={'m-sketch ' + className} aria-hidden="true" focusable="false"
       viewBox={`0 0 ${size.w} ${size.h}`} preserveAspectRatio="none">
-      {fill && <rect className="m-sketch-fill" width={size.w} height={size.h} rx={rx} />}
+      {fill && (shape === 'ellipse'
+        ? <ellipse className="m-sketch-fill" cx={size.w / 2} cy={size.h / 2} rx={size.w / 2} ry={size.h / 2} />
+        : <rect className="m-sketch-fill" width={size.w} height={size.h} rx={rx} />)}
       {strokes.map((s, i) => <path key={i} d={s.d} strokeWidth={s.w * ctx.stroke} />)}
     </svg>
   );

@@ -26,6 +26,7 @@ export const quantize = (n, step = 8) => Math.max(step, Math.round(n / step) * s
 
 /** The same shapes as true geometry, no hand. */
 function exactFrame(w, h, radius, shape) {
+  if (shape === 'ellipse') { const a = f(w / 2), b = f(h / 2); return [{ d: `M0 ${b}A${a} ${b} 0 1 0 ${f(w)} ${b}A${a} ${b} 0 1 0 0 ${b}Z`, w: 1 }]; }
   if (shape === 'line') return [{ d: `M0 0L${f(w)} 0`, w: 1 }];
   const r = Math.min(shape === 'pill' ? h / 2 : radius, w / 2, h / 2);
   if (r < 1) return [{ d: `M0 0L${f(w)} 0L${f(w)} ${f(h)}L0 ${f(h)}Z`, w: 1 }];
@@ -36,6 +37,6 @@ function exactFrame(w, h, radius, shape) {
 /** Strokes for a frame. `key` + `seed` fix the drawing; `rough` 0 = exact shape, above 0 = the hand. */
 export function drawFrame({ w, h, radius = 0, shape = 'rect', key, seed = 0, rough = 1 }) {
   if (!rough) return exactFrame(w, h, radius, shape);
-  const src = shape === 'line' ? lineSource(w) : frameSource(w, h, shape === 'pill' ? h / 2 : radius);
+  const src = shape === 'line' ? lineSource(w) : shape === 'ellipse' ? `E ${f(w / 2)} ${f(h / 2)} ${f(w / 2)} ${f(h / 2)}` : frameSource(w, h, shape === 'pill' ? h / 2 : radius);
   return drawSource(src, key, seed).p;
 }
