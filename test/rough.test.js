@@ -41,4 +41,6 @@ test('drawFrame: shapes give strokes', () => {
   assert.equal(drawFrame({ ...box, shape: 'pill' }).length, 8);
   assert.equal(drawFrame({ ...box, shape: 'pill', rough: 0 }).length, 1);
   assert.equal(drawFrame({ ...box, shape: 'line' }).length, 1);
+  assert.equal(drawFrame({ ...box, shape: 'ellipse' }).length, 1);
+  assert.equal(drawFrame({ ...box, shape: 'ellipse', rough: 0 })[0].d, 'M0 20A60 20 0 1 0 120 20A60 20 0 1 0 0 20Z');
 });

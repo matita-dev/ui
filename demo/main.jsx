@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import { useState } from 'react';
-import { MatitaProvider, Button, IconButton, Input, Checkbox } from '@matita/ui';
+import { MatitaProvider, Button, IconButton, Input, Checkbox, Textarea, Select, Radio, Switch } from '@matita/ui';
 
 function App() {
   const [rough, setRough] = useState(1);
@@ -28,6 +28,23 @@ function App() {
           <div className="stack">
             <Input label="Name" placeholder="Ada Lovelace" hint="Your name as it should appear." />
             <Input label="Email" type="email" placeholder="ada@example.com" />
+          </div>
+        </section>
+        <section>
+          <h2>Textarea and Select</h2>
+          <div className="stack">
+            <Textarea label="Message" placeholder="Write something…" />
+            <Select label="Pen" defaultValue="hb"><option value="hb">HB</option><option value="2b">2B</option><option value="4b">4B</option></Select>
+          </div>
+        </section>
+        <section>
+          <h2>Radio and Switch</h2>
+          <div className="stack">
+            <Radio name="size" defaultChecked>Small</Radio>
+            <Radio name="size">Medium</Radio>
+            <Radio name="size" disabled>Large (disabled)</Radio>
+            <Switch defaultChecked>Show grid</Switch>
+            <Switch>Paper grain</Switch>
           </div>
         </section>
         <section>

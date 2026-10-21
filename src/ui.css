@@ -42,13 +42,13 @@
 .m-label { font-size: .9em; }
 .m-hint { font-size: .85em; opacity: .7; }
 .m-input { position: relative; display: block; }
-.m-input input {
+.m-input input, .m-input textarea, .m-input select {
   position: relative; width: 100%; box-sizing: border-box; font: inherit; color: inherit;
   padding: calc(var(--m-space) * 2.5) calc(var(--m-space) * 3);
   background: none; border: 0; outline: 0;
 }
-.m-input:has(input:focus-visible) { outline: 2px solid var(--m-accent); outline-offset: 4px; }
-.m-input input::placeholder { color: inherit; opacity: .45; }
+.m-input:has(:is(input, textarea, select):focus-visible) { outline: 2px solid var(--m-accent); outline-offset: 4px; }
+.m-input input::placeholder, .m-input textarea::placeholder { color: inherit; opacity: .45; }
 
 /* Checkbox */
 .m-check { display: inline-flex; align-items: center; gap: calc(var(--m-space) * 2.5); cursor: pointer; position: relative; }
@@ -59,5 +59,29 @@
 .m-check input:checked ~ .m-check-box .m-tick path { stroke-dashoffset: 0; }
 .m-check input:focus-visible ~ .m-check-box { outline: 2px solid var(--m-accent); outline-offset: 4px; }
 .m-check input:disabled ~ * { opacity: .45; }
-@media (prefers-reduced-motion: reduce) { .m-tick path { transition: none; } }
+/* Textarea, Select */
+.m-textarea textarea { resize: vertical; display: block; min-height: 3em; }
+.m-select select { appearance: none; -webkit-appearance: none; padding-right: 36px; cursor: pointer; }
+.m-select select option { color: #1d1d20; background: #fff; }
+.m-chevron { position: absolute; right: 10px; top: 50%; width: 18px; height: 18px; margin-top: -9px; fill: none; stroke: var(--m-ink); stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+
+/* Radio: the dot scales in */
+.m-dot { position: absolute; inset: 5px; transform: scale(0); transition: transform .16s ease-out; }
+.m-dot .m-sketch { stroke: var(--m-accent); }
+.m-dot .m-sketch-fill { --m-fill: var(--m-accent); }
+.m-radio input:checked ~ .m-check-box .m-dot { transform: scale(1); }
+
+/* Switch: the knob slides, the track fills */
+.m-switch input { width: 40px; height: 22px; }
+.m-switch-track { --m-fill: var(--m-paper); position: relative; flex: none; width: 40px; height: 22px; }
+.m-switch input:checked ~ .m-switch-track { --m-fill: var(--m-accent); }
+.m-switch input:checked ~ .m-switch-track .m-sketch { stroke: var(--m-accent); }
+.m-knob { position: absolute; top: 4px; left: 4px; width: 14px; height: 14px; transition: transform .16s ease-out; }
+.m-knob .m-sketch-fill { fill: var(--m-ink); }
+.m-switch input:checked ~ .m-switch-track .m-knob { transform: translateX(18px); }
+.m-switch input:checked ~ .m-switch-track .m-knob .m-sketch { stroke: #fff; }
+.m-switch input:checked ~ .m-switch-track .m-knob .m-sketch-fill { fill: #fff; }
+.m-switch input:focus-visible ~ .m-switch-track { outline: 2px solid var(--m-accent); outline-offset: 4px; }
+
+@media (prefers-reduced-motion: reduce) { .m-tick path, .m-dot, .m-knob { transition: none; } }
 @media print { .m-btn { --m-fill: transparent; } }
