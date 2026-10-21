@@ -7,3 +7,6 @@ export { Textarea } from './textarea.jsx';
 export { Select } from './select.jsx';
 export { Radio } from './radio.jsx';
 export { Switch } from './switch.jsx';
+export { Card } from './card.jsx';
+export { Divider } from './divider.jsx';
+export { Badge } from './badge.jsx';
