@@ -10,7 +10,7 @@ function App() {
         <h1>@matita/ui · milestone 1</h1>
         <section>
           <h2>Roughness</h2>
-          <label className="row"><input type="range" min="0" max="1" step="0.05" value={rough} onChange={e => setRough(+e.target.value)} aria-label="Roughness" /> {Math.round(rough * 100)}%</label>
+          <Checkbox checked={rough > 0} onChange={e => setRough(e.target.checked ? 1 : 0)}>Sketchy (off = clean lines)</Checkbox>
         </section>
         <section>
           <h2>Button</h2>
