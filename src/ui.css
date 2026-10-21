@@ -83,5 +83,15 @@
 .m-switch input:checked ~ .m-switch-track .m-knob .m-sketch-fill { fill: #fff; }
 .m-switch input:focus-visible ~ .m-switch-track { outline: 2px solid var(--m-accent); outline-offset: 4px; }
 
+/* Card, Divider, Badge */
+.m-card { --m-fill: var(--m-paper); position: relative; display: block; color: inherit; text-decoration: none; }
+.m-card-body { position: relative; padding: calc(var(--m-space) * 5); }
+a.m-card:focus-visible { outline: 2px solid var(--m-accent); outline-offset: 4px; }
+.m-divider { position: relative; height: 2px; margin: calc(var(--m-space) * 3) 0; }
+.m-badge { position: relative; display: inline-flex; align-items: center; padding: 1px calc(var(--m-space) * 2.5); font-size: .8em; line-height: 1.5; white-space: nowrap; }
+.m-badge-label { position: relative; }
+.m-badge--accent { --m-fill: var(--m-accent); color: #fff; }
+.m-badge--accent .m-sketch { stroke: var(--m-accent); }
+
 @media (prefers-reduced-motion: reduce) { .m-tick path, .m-dot, .m-knob { transition: none; } }
 @media print { .m-btn { --m-fill: transparent; } }

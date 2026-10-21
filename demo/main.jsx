@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import { useState } from 'react';
-import { MatitaProvider, Button, IconButton, Input, Checkbox, Textarea, Select, Radio, Switch } from '@matita/ui';
+import { MatitaProvider, Button, IconButton, Input, Checkbox, Textarea, Select, Radio, Switch, Card, Divider, Badge } from '@matita/ui';
 
 function App() {
   const [rough, setRough] = useState(1);
@@ -8,6 +8,14 @@ function App() {
     <MatitaProvider rough={rough}>
       <main>
         <h1>@matita/ui · milestone 1</h1>
+        <section>
+          <h2>Card, Divider and Badge</h2>
+          <Card as="article">
+            <div className="row"><strong>Drafting grid</strong><Badge>draft</Badge><Badge tone="accent">new</Badge></div>
+            <Divider />
+            <p style={{ margin: 0 }}>A card is a drawn frame and a paper fill behind ordinary content.</p>
+          </Card>
+        </section>
         <section>
           <h2>Roughness</h2>
           <Checkbox checked={rough > 0} onChange={e => setRough(e.target.checked ? 1 : 0)}>Sketchy (off = clean lines)</Checkbox>
