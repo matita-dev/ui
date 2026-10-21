@@ -6,8 +6,8 @@ import { useMatita } from './provider.jsx';
 /** Native checkbox (stays focusable, clickable and announced) with a drawn box. The tick is the icon set's own `check`,
     drawn on when the box is checked. */
 export function Checkbox({ children, className = '', ...rest }) {
-  const { rough, stroke } = useMatita();
-  const tick = useMemo(() => drawIcon('check', { wobble: rough }).ink, [rough]);
+  const { stroke } = useMatita();
+  const tick = useMemo(() => drawIcon('check').ink, []);
   return (
     <label className={'m-check ' + className}>
       <input type="checkbox" {...rest} />

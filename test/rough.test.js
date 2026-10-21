@@ -39,5 +39,6 @@ test('drawFrame: rough 0 is the exact shape, seed independent', () => {
 test('drawFrame: shapes give strokes', () => {
   assert.equal(drawFrame({ ...box, shape: 'rect' }).length, 1);
   assert.equal(drawFrame({ ...box, shape: 'pill' }).length, 8);
+  assert.equal(drawFrame({ ...box, shape: 'pill', rough: 0 }).length, 1);
   assert.equal(drawFrame({ ...box, shape: 'line' }).length, 1);
 });
