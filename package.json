@@ -1,0 +1,28 @@
+{
+  "name": "@matita/ui",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Pencil-sketched UI components: crisp text and behavior, hand-drawn borders, fills and checks.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./ui.css": "./dist/ui.css"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "demo": "node scripts/build.mjs --demo"
+  },
+  "peerDependencies": {
+    "@matita/icons": ">=0.4.0",
+    "react": ">=18"
+  },
+  "devDependencies": {
+    "@matita/icons": "file:../icons",
+    "esbuild": "^0.25.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
