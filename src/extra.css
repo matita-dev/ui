@@ -1,0 +1,13 @@
+/* What the library adds on top of the design system's tokens: the provider is the page surface, with an optional
+   construction grid, and the paper tooth covers the viewport in pencil mode. */
+.m-root { min-height: 100%; }
+.m-scope { display: contents; }
+.m-root[data-mode="pencil"]::after { position: fixed; }
+.m-root[data-grid="lines"]:not([data-mode="blueprint"]) { background-image: var(--pattern-grid); background-size: var(--pattern-grid-size); }
+.m-root[data-grid="dots"]:not([data-mode="blueprint"]) { background-image: var(--pattern-dots); background-size: var(--pattern-grid-size); }
+.m-root[data-mode="blueprint"][data-grid="lines"] {
+  background-image: var(--pattern-grid), var(--texture-paper), radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.06), transparent 60%), radial-gradient(ellipse at 80% 90%, rgba(0,10,40,.28), transparent 55%), linear-gradient(135deg, #0B3D91 0%, #0F4396 50%, #134A9E 100%);
+  background-size: var(--pattern-grid-size), var(--pattern-grid-size), 220px 220px, auto, auto, auto; }
+.m-root[data-mode="blueprint"][data-grid="dots"] {
+  background-image: var(--pattern-dots), var(--texture-paper), radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.06), transparent 60%), radial-gradient(ellipse at 80% 90%, rgba(0,10,40,.28), transparent 55%), linear-gradient(135deg, #0B3D91 0%, #0F4396 50%, #134A9E 100%);
+  background-size: var(--pattern-grid-size), 220px 220px, auto, auto, auto; }

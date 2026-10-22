@@ -1,0 +1,17 @@
+.m-root,.m-root *,.m-root *::before,.m-root *::after{box-sizing:border-box}
+.m-root{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.m-root{margin:0;background-color:var(--surface-page);color:var(--text-body);font:var(--type-body);letter-spacing:var(--tracking-body)}
+.m-root :is(h1,h2,h3,h4){color:var(--text-primary);font-family:var(--font-sans);font-weight:var(--fw-medium);letter-spacing:var(--tracking-heading);margin:0;text-wrap:balance}
+.m-root p{margin:0;text-wrap:pretty}
+.m-root a{color:var(--text-accent);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.m-root a:hover{color:var(--blue-700);text-decoration-style:dashed}
+.m-root :is(code,kbd,pre){font-family:var(--font-mono)}
+.m-root ::selection{background:var(--blue-200);color:var(--ink-1)}
+.m-root :focus-visible{outline:none;box-shadow:var(--focus-ring)}
+/* draw-on / erase keyframes (driven by <DrawingMode>; a/b pairs let the same animation restart) */
+@keyframes dg-in-h-a{from{transform:scaleX(0)}}@keyframes dg-in-h-b{from{transform:scaleX(0)}}
+@keyframes dg-in-v-a{from{transform:scaleY(0)}}@keyframes dg-in-v-b{from{transform:scaleY(0)}}
+@keyframes dg-in-s-a{from{stroke-dashoffset:1}}@keyframes dg-in-s-b{from{stroke-dashoffset:1}}
+@keyframes dg-out-h{to{transform:scaleX(0)}}@keyframes dg-out-v{to{transform:scaleY(0)}}@keyframes dg-out-s{to{stroke-dashoffset:-1}}
+@keyframes dg-pin-a{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0)}}@keyframes dg-pin-b{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0)}}@keyframes dg-pout{from{clip-path:inset(0)}to{clip-path:inset(0 0 0 100%)}}
+[data-drawing] [data-dg-fade]{transition:opacity var(--dur-slow) var(--ease-draft)}[data-drawing="out"] [data-dg-fade]{opacity:0}

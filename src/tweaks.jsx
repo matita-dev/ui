@@ -1,50 +1,37 @@
-import { useId } from 'react';
+import React from 'react';
 import { GRIDS, MODES, useMatita } from './provider.jsx';
-import { Sketch } from './sketch.jsx';
 
-const LABELS = { ink: 'Ink', pencil: 'Pencil', blueprint: 'Blueprint', none: 'None', lines: 'Lines', dots: 'Dots', sketchy: 'Sketchy', clean: 'Clean', auto: 'Auto' };
+const LABELS = { ink: 'Ink', pencil: 'Pencil', blueprint: 'Blueprint', none: 'None', lines: 'Lines', dots: 'Dots' };
+const label = { font: 'var(--fw-medium) 11px/1 var(--font-mono)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--text-muted)' };
 
-function Segmented({ label, value, options, onChange }) {
-  const id = useId();
+function Segmented({ name, value, options, onChange }) {
   return (
-    <div className="m-tw-group" role="group" aria-labelledby={id}>
-      <span className="m-tw-label" id={id}>{label}</span>
-      <div className="m-seg">
-        <Sketch />
+    <div role="group" aria-label={name} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <span aria-hidden="true" style={label}>{name}</span>
+      <span data-pencil="box-light" style={{ display: 'inline-flex', border: '1px solid var(--line-1)', borderRadius: 'var(--radius-control)', background: 'var(--surface-card)' }}>
         {options.map(o => (
-          <button key={o} type="button" className="m-seg-opt" aria-pressed={value === o} onClick={() => onChange(o)}>{LABELS[o] || o}</button>
+          <button key={o} type="button" aria-pressed={value === o} onClick={() => onChange(o)} data-pencil={value === o ? 'shade' : undefined}
+            style={{ height: 28, padding: '0 12px', border: 0, borderRadius: 'var(--radius-control)', cursor: 'pointer', font: 'var(--fw-medium) 12px/1 var(--font-sans)',
+              background: value === o ? 'var(--ink-1)' : 'transparent', color: value === o ? 'var(--paper-0)' : 'var(--ink-1)' }}>{LABELS[o]}</button>
         ))}
-      </div>
+      </span>
     </div>
   );
 }
 
-function Range({ label, value, min, max, step, format, onChange }) {
-  const id = useId();
-  return (
-    <label className="m-tw-group" htmlFor={id}>
-      <span className="m-tw-label">{label}</span>
-      <span className="m-tw-range">
-        <input id={id} type="range" min={min} max={max} step={step} value={value} onChange={e => onChange(Number(e.target.value))} />
-        <output className="m-tw-value">{format(value)}</output>
-      </span>
-    </label>
-  );
-}
-
-/** A header bar that edits the provider's look live: mode, grid, line thickness, and roughness.
-    `controls` picks which ones to show. It changes the nearest MatitaProvider, so the whole system follows. */
-export function Tweaks({ controls = ['mode', 'grid', 'stroke', 'rough'], title = 'Tweaks', sticky = true, className = '', ...rest }) {
-  const { mode, grid, stroke, rough, roughSetting, set } = useMatita();
+/** A header bar that edits the provider's look live: mode and grid, plus a Redraw for the pencil. `controls` picks which to show. */
+export function Tweaks({ controls = ['mode', 'grid', 'redraw'], title = 'Tweaks', sticky = true, style, ...rest }) {
+  const { mode, grid, set, redraw } = useMatita();
   const has = c => controls.includes(c);
   return (
-    <header className={`m-tweaks ${sticky ? 'm-tweaks--sticky' : ''} ${className}`} {...rest}>
-      <span className="m-tweaks-rule" aria-hidden="true"><Sketch shape="line" /></span>
-      <span className="m-tw-title">{title}</span>
-      {has('mode') && <Segmented label="Mode" value={mode} options={MODES} onChange={v => set({ mode: v, stroke: null })} />}
-      {has('grid') && <Segmented label="Grid" value={grid} options={GRIDS} onChange={v => set({ grid: v })} />}
-      {has('stroke') && <Range label="Line" value={stroke} min={0.6} max={3} step={0.1} format={v => v.toFixed(1)} onChange={v => set({ stroke: v })} />}
-      {has('rough') && <Segmented label="Hand" value={roughSetting === null ? 'auto' : roughSetting ? 'sketchy' : 'clean'} options={['auto', 'sketchy', 'clean']} onChange={v => set({ rough: v === 'auto' ? null : v === 'sketchy' ? 1 : 0 })} />}
+    <header data-pencil="rule-b" style={{ position: sticky ? 'sticky' : 'relative', top: 0, zIndex: 'var(--z-nav)', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '12px 28px', padding: '12px 20px',
+      background: 'var(--surface-page)', borderBottom: '1px solid var(--line-strong)', ...style }} {...rest}>
+      <span style={{ ...label, color: 'var(--text-accent)' }}>{title}</span>
+      {has('mode') && <Segmented name="Mode" value={mode} options={MODES} onChange={v => set({ mode: v })} />}
+      {has('grid') && <Segmented name="Grid" value={grid} options={GRIDS} onChange={v => set({ grid: v })} />}
+      {has('redraw') && mode === 'pencil' && (
+        <button type="button" onClick={redraw} data-pencil="box-light" style={{ height: 28, padding: '0 12px', border: '1px solid var(--line-1)', borderRadius: 'var(--radius-control)', background: 'var(--surface-card)', cursor: 'pointer', color: 'var(--ink-1)', font: 'var(--fw-medium) 12px/1 var(--font-sans)' }}>Redraw</button>
+      )}
     </header>
   );
 }

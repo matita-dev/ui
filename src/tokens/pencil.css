@@ -1,0 +1,92 @@
+/* Pencil mode — graphite on cartridge paper. Scope with data-mode="pencil" on <html>, <body> or any wrapper (or <DrawingMode mode="pencil">).
+   Components tag their drawn parts with data-pencil roles. Inside <DrawingMode> the pencil engine redraws every tagged part as its own
+   hand-drawn graphite stroke and marks it data-pencil-on; without <DrawingMode> the texture fallback at the bottom is used. Ink and blueprint ignore the roles.
+   Roles: box · box-light · box-blue · box-red (outlines) · rule-t|r|b|l (+ rule-light) single sides · ring · ring-light (circles)
+          h / v (absolute 1px lines) · h-flow / v-flow (in-flow rules) · h-heavy / v-heavy (2px sheet edges) · h-cons / v-cons (construction lines)
+          arrow-l|r|u|d (dimension arrowheads, point direction) · plate shadows (--shadow-plate inline) are re-shaded by hand automatically
+          shade (dark fills) · tint (light fills) · hatch (pattern layer, reads data-hatch) · svg / grain (graphite grain only) · clear (drop the element's fill)
+   Modifiers: dashed · dotted · blue · red */
+[data-mode="pencil"]{
+--paper-0:#F2EEE7;--paper-1:#EFEBE3;--paper-2:#E6E1D6;--paper-3:#DAD4C7;--paper-4:#C7C0B1;
+/* HB graphite — slightly cool against the warm sheet */
+--ink-1:#2F3033;--ink-2:#46474B;--ink-3:#5F6064;--ink-4:#8A8A8C;--ink-5:#B3B1AD;
+/* blue pencil + red pencil replace drafting blue and redline */
+--blue-50:#E9EDF5;--blue-100:#DEE3EF;--blue-200:#C2CADD;--blue-400:#6F81B0;--blue-500:#445A92;--blue-600:#384C7C;--blue-700:#2C3C62;
+--red-100:#F1E0DA;--red-500:#B04A3A;--red-600:#8E3A2D;
+--green-100:#E0EBE1;--green-500:#48785A;--amber-100:#F1E8D4;--amber-500:#957030;
+--line-strong:#2F3033;--line-1:rgba(47,48,51,.36);--line-2:rgba(47,48,51,.2);--line-3:rgba(47,48,51,.09);--line-blue:rgba(68,90,146,.4);
+--surface-page:var(--paper-1);--surface-card:var(--paper-0);--surface-sunken:var(--paper-2);--surface-inverse:var(--ink-1);--surface-accent:var(--blue-500);--surface-accent-soft:var(--blue-50);
+--text-primary:var(--ink-1);--text-body:var(--ink-2);--text-muted:var(--ink-3);--text-faint:var(--ink-4);--text-inverse:var(--paper-0);--text-accent:var(--blue-500);--text-redline:var(--red-500);--text-on-accent:#FFFFFF;
+--border-frame:var(--line-strong);--border-default:var(--line-1);--border-subtle:var(--line-2);--border-guide:var(--line-2);--border-focus:var(--blue-500);
+--status-success:var(--green-500);--status-success-bg:var(--green-100);--status-warning:var(--amber-500);--status-warning-bg:var(--amber-100);--status-danger:var(--red-500);--status-danger-bg:var(--red-100);--status-info:var(--blue-500);--status-info-bg:var(--blue-100);
+--shadow-plate:3px 3px 0 0 rgba(47,48,51,.7);--shadow-plate-blue:3px 3px 0 0 rgba(68,90,146,.75);
+--shadow-overlay:0 1px 0 var(--line-2),0 12px 28px -14px rgba(47,48,51,.3);
+--focus-ring:0 0 0 2px var(--paper-0),0 0 0 3px var(--blue-500);
+/* 4H construction lines run past every framed corner */
+--construction-length:28px;/* @kind other */--line-construction:rgba(47,48,51,.28);
+/* patterns: uneven spacing and weight, like hatching by hand */
+--pattern-grid:linear-gradient(var(--line-3) 1px,transparent 1px),linear-gradient(90deg,var(--line-3) 1px,transparent 1px);
+--pattern-grid-major:linear-gradient(var(--line-2) 1px,transparent 1px),linear-gradient(90deg,var(--line-2) 1px,transparent 1px);
+--pattern-dots:radial-gradient(circle,var(--line-1) 1px,transparent 1.2px);
+--hatch-45:repeating-linear-gradient(-45deg,var(--line-1) 0 1px,transparent 1px 6px,var(--line-2) 6px 7.2px,transparent 7.2px 13px,var(--line-1) 13px 13.8px,transparent 13.8px 21px);
+--hatch-45-dense:repeating-linear-gradient(-45deg,var(--line-1) 0 1px,transparent 1px 3.6px,var(--line-2) 3.6px 4.6px,transparent 4.6px 8.4px,var(--line-1) 8.4px 9.2px,transparent 9.2px 12px);
+--hatch-cross:repeating-linear-gradient(45deg,var(--line-2) 0 1px,transparent 1px 6.5px,var(--line-2) 6.5px 7.3px,transparent 7.3px 15px),repeating-linear-gradient(-45deg,var(--line-2) 0 1px,transparent 1px 7.5px,var(--line-2) 7.5px 8.2px,transparent 8.2px 14px);
+--hatch-blue:repeating-linear-gradient(-45deg,var(--line-blue) 0 1px,transparent 1px 5.5px,var(--line-blue) 5.5px 6.3px,transparent 6.3px 12px);
+--guide-h:repeating-linear-gradient(90deg,var(--line-1) 0 5px,transparent 5px 8px,var(--line-1) 8px 11.5px,transparent 11.5px 15px);
+--guide-v:repeating-linear-gradient(180deg,var(--line-1) 0 5px,transparent 5px 8px,var(--line-1) 8px 11.5px,transparent 11.5px 15px);
+--fill-poche:var(--ink-2);
+--hatch-earth:repeating-linear-gradient(45deg,var(--line-1) 0 1px,transparent 1px 12px),repeating-linear-gradient(45deg,transparent 0 6px,var(--line-2) 6px 7px,transparent 7px 12px);
+--pattern-gravel:radial-gradient(circle at 2px 2px,var(--line-1) .8px,transparent 1.2px),radial-gradient(circle at 6.5px 5px,var(--line-1) .65px,transparent 1px),radial-gradient(circle at 3px 7.5px,var(--line-1) .5px,transparent .9px);
+/* hand lettering: one hand letters everything — UI text, headings, annotations, emphasis. data-lettering="type" keeps the typefaces */
+--font-hand:'Architects Daughter','Segoe Print','Bradley Hand',cursive;
+--font-sans:var(--font-hand);--font-mono:var(--font-hand);--font-serif:var(--font-hand);
+--tracking-display:0;/* @kind other */--tracking-heading:0;/* @kind other */--tracking-body:0;/* @kind other */
+--type-display:var(--fw-medium) var(--fs-display-l)/var(--lh-tight) var(--font-sans);/* @kind other */--type-heading:var(--fw-medium) var(--fs-h2)/var(--lh-snug) var(--font-sans);/* @kind other */--type-body:var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-sans);/* @kind other */--type-label:var(--fw-medium) var(--fs-label)/1 var(--font-mono);/* @kind other */--type-code:var(--fw-regular) var(--fs-body-s)/var(--lh-mono) var(--font-mono);/* @kind other */
+font-synthesis-weight:none;
+background-color:var(--surface-page);color:var(--text-body);
+}
+/* data-lettering="type": keep Geist / Geist Mono / Instrument Serif under the pencil */
+[data-mode="pencil"][data-lettering="type"]{--font-sans:'Geist',ui-sans-serif,system-ui,sans-serif;--font-mono:'Geist Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;--font-serif:'Instrument Serif','Times New Roman',serif;--tracking-display:-0.035em;/* @kind other */--tracking-heading:-0.02em;/* @kind other */--tracking-body:-0.005em;/* @kind other */--type-display:var(--fw-medium) var(--fs-display-l)/var(--lh-tight) var(--font-sans);/* @kind other */--type-heading:var(--fw-medium) var(--fs-h2)/var(--lh-snug) var(--font-sans);/* @kind other */--type-body:var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-sans);/* @kind other */--type-label:var(--fw-medium) var(--fs-label)/1 var(--font-mono);/* @kind other */--type-code:var(--fw-regular) var(--fs-body-s)/var(--lh-mono) var(--font-mono);/* @kind other */font-synthesis-weight:auto}
+[data-mode="pencil"]:not([data-lettering="type"]) :is(h1,h2,h3,h4,h5,h6){letter-spacing:0!important}
+[data-mode="pencil"] ::selection{background:var(--blue-200);color:var(--ink-1)}
+/* paper tooth over everything — graphite, fills and type all sit in the same sheet */
+:where([data-mode="pencil"]){position:relative}
+[data-mode="pencil"]::after{content:"";position:absolute;inset:0;z-index:2147483000;pointer-events:none;background:url('./textures/paper-tooth.png') 0 0/256px 256px}
+html[data-mode="pencil"]::after,body[data-mode="pencil"]::after{position:fixed}
+/* hand-drawn engine (<DrawingMode>): hide the CSS original of every part it redraws */
+[data-mode="pencil"] :is([data-pencil-on~="stroke"],[data-pencil-on~="arrow"]){border-color:transparent!important}
+[data-mode="pencil"] [data-pencil-on~="shadow"]{box-shadow:none!important}
+[data-mode="pencil"] :is([data-pencil-on~="line"],[data-pencil-on~="fill"],[data-pencil-on~="clear"]){background:none!important}
+[data-mode="pencil"] [data-pencil-on~="tint"]{background:var(--surface-card)!important}
+[data-mode="pencil"] :is([data-pencil-on~="fill"],[data-pencil-on~="tint"]){isolation:isolate}
+[data-mode="pencil"] [data-pencil-on~="hatch"]{background-image:none!important}
+/* graphite grain: paper tooth breaks up every drawn stroke (fills get a finer, denser tooth so type on them stays legible) */
+/* sketch icons take the same line grain as every other pencil stroke */
+[data-pencil-overlay],[data-mode="pencil"] svg[data-sketch][data-pencil]{-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cfilter id='g' filterUnits='userSpaceOnUse' x='0' y='0' width='512' height='512' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='3' stitchTiles='stitch' result='f'/%3E%3CfeColorMatrix in='f' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -4 0 0 0 3.25' result='a'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.045' numOctaves='2' seed='9' stitchTiles='stitch' result='l'/%3E%3CfeColorMatrix in='l' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1.2 0 0 0 1.5' result='b'/%3E%3CfeComposite in='a' in2='b' operator='arithmetic' k1='1'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23g)'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cfilter id='g' filterUnits='userSpaceOnUse' x='0' y='0' width='512' height='512' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='3' stitchTiles='stitch' result='f'/%3E%3CfeColorMatrix in='f' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -4 0 0 0 3.25' result='a'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.045' numOctaves='2' seed='9' stitchTiles='stitch' result='l'/%3E%3CfeColorMatrix in='l' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1.2 0 0 0 1.5' result='b'/%3E%3CfeComposite in='a' in2='b' operator='arithmetic' k1='1'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23g)'/%3E%3C/svg%3E");-webkit-mask-size:512px 512px;mask-size:512px 512px}
+:is([data-pencil-overlay="fill"],[data-mode="pencil"] [data-pencil-on~="grain"]){-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cfilter id='g' filterUnits='userSpaceOnUse' x='0' y='0' width='512' height='512' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='3' stitchTiles='stitch' result='f'/%3E%3CfeColorMatrix in='f' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -2.6 0 0 0 2.9' result='a'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.045' numOctaves='2' seed='9' stitchTiles='stitch' result='l'/%3E%3CfeColorMatrix in='l' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -.5 0 0 0 1.22' result='b'/%3E%3CfeComposite in='a' in2='b' operator='arithmetic' k1='1'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23g)'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cfilter id='g' filterUnits='userSpaceOnUse' x='0' y='0' width='512' height='512' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='3' stitchTiles='stitch' result='f'/%3E%3CfeColorMatrix in='f' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -2.6 0 0 0 2.9' result='a'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.045' numOctaves='2' seed='9' stitchTiles='stitch' result='l'/%3E%3CfeColorMatrix in='l' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -.5 0 0 0 1.22' result='b'/%3E%3CfeComposite in='a' in2='b' operator='arithmetic' k1='1'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23g)'/%3E%3C/svg%3E");-webkit-mask-size:512px 512px;mask-size:512px 512px}
+[data-pencil-overlay]{animation:var(--dg-p,none) var(--dg-dur,0ms) var(--dg-ease,linear) both}
+[data-pencil-on~="line"]>[data-pencil-overlay]{animation:none}
+/* drawn symbols bend slightly like freehand linework (SketchIcons are already drawn by hand) */
+[data-mode="pencil"] [data-pencil-on~="grain"]:not([data-sketch]){filter:url(#dg-wander)}
+/* texture fallback — data-mode="pencil" without <DrawingMode> */
+[data-mode="pencil"] :is([data-pencil~="h"],[data-pencil~="h-cons"],[data-pencil~="h-flow"],[data-pencil~="h-heavy"]):not([data-pencil-on]){-webkit-mask-image:url('./textures/pencil-line-h.png');mask-image:url('./textures/pencil-line-h.png');-webkit-mask-size:600px 100%;mask-size:600px 100%;-webkit-mask-repeat:repeat-x;mask-repeat:repeat-x;-webkit-mask-position:0 0;mask-position:0 0}
+[data-mode="pencil"] :is([data-pencil~="v"],[data-pencil~="v-cons"],[data-pencil~="v-flow"],[data-pencil~="v-heavy"]):not([data-pencil-on]){-webkit-mask-image:url('./textures/pencil-line-v.png');mask-image:url('./textures/pencil-line-v.png');-webkit-mask-size:100% 600px;mask-size:100% 600px;-webkit-mask-repeat:repeat-y;mask-repeat:repeat-y;-webkit-mask-position:0 0;mask-position:0 0}
+[data-mode="pencil"] :is([data-pencil~="h"],[data-pencil~="h-cons"]):not([data-pencil-on]){height:3px!important;margin-top:-1px!important;margin-bottom:-1px!important}
+[data-mode="pencil"] :is([data-pencil~="v"],[data-pencil~="v-cons"]):not([data-pencil-on]){width:3px!important;margin-left:-1px!important;margin-right:-1px!important}
+[data-mode="pencil"] [data-pencil~="h-flow"]:not([data-pencil-on]){height:3px!important}
+[data-mode="pencil"] [data-pencil~="v-flow"]:not([data-pencil-on]){width:3px!important}
+[data-mode="pencil"] [data-pencil~="h-heavy"]:not([data-pencil-on]){height:5px!important;margin-top:-1.5px!important;margin-bottom:-1.5px!important}
+[data-mode="pencil"] [data-pencil~="v-heavy"]:not([data-pencil-on]){width:5px!important;margin-left:-1.5px!important;margin-right:-1.5px!important}
+[data-mode="pencil"] :is([data-pencil~="h"],[data-pencil~="h-flow"]):not([data-pencil-on]):nth-child(3n+2){-webkit-mask-position:-230px 0;mask-position:-230px 0}[data-mode="pencil"] :is([data-pencil~="v"],[data-pencil~="v-flow"]):not([data-pencil-on]):nth-child(3n+2){-webkit-mask-position:0 -230px;mask-position:0 -230px}
+[data-mode="pencil"] :is([data-pencil~="h"],[data-pencil~="h-flow"]):not([data-pencil-on]):nth-child(3n){-webkit-mask-position:-410px 0;mask-position:-410px 0}[data-mode="pencil"] :is([data-pencil~="v"],[data-pencil~="v-flow"]):not([data-pencil-on]):nth-child(3n){-webkit-mask-position:0 -410px;mask-position:0 -410px}
+[data-mode="pencil"] [data-pencil~="box"]:not([data-pencil-on],[data-pencil~="dashed"]){border-image:url('./textures/pencil-box.png') 24 / 10px / 4px round!important;border-radius:0!important}
+[data-mode="pencil"] [data-pencil~="box-light"]:not([data-pencil-on],[data-pencil~="dashed"]){border-image:url('./textures/pencil-box-light.png') 24 / 10px / 4px round!important;border-radius:0!important}
+[data-mode="pencil"] [data-pencil~="box-blue"]:not([data-pencil-on]){border-image:url('./textures/pencil-box-blue.png') 24 / 10px / 4px round!important;border-radius:0!important}
+[data-mode="pencil"] [data-pencil~="box-red"]:not([data-pencil-on]){border-image:url('./textures/pencil-box-red.png') 24 / 10px / 4px round!important;border-radius:0!important}
+[data-mode="pencil"] [data-pencil~="shade"]:not([data-pencil-on]){background-image:url('./textures/pencil-shade.png')!important;background-size:96px 96px!important;background-repeat:repeat!important;background-clip:padding-box!important;border-radius:0!important}
+[data-mode="pencil"] [data-pencil~="tint"]:not([data-pencil-on]){background-image:url('./textures/pencil-tint.png')!important;background-size:96px 96px!important;background-repeat:repeat!important}
+[data-mode="pencil"] :is([data-pencil~="svg"],[data-pencil~="hatch"]):not([data-pencil-on]){-webkit-mask-image:url('./textures/pencil-grain.png');mask-image:url('./textures/pencil-grain.png');-webkit-mask-size:128px 128px;mask-size:128px 128px}
+[data-mode="pencil"] [data-hatch="diagonal"]:not([data-pencil-on]){background-image:url('./textures/pencil-hatch.png')!important;background-size:120px 120px!important}
+[data-mode="pencil"] [data-hatch="dense"]:not([data-pencil-on]){background-image:url('./textures/pencil-hatch.png')!important;background-size:72px 72px!important}
+[data-mode="pencil"] [data-hatch="cross"]:not([data-pencil-on]){background-image:url('./textures/pencil-hatch.png'),url('./textures/pencil-hatch-b.png')!important;background-size:120px 120px!important}
+[data-mode="pencil"] [data-hatch="poche"]:not([data-pencil-on]){background-image:url('./textures/pencil-shade.png')!important;background-size:96px 96px!important}

@@ -1,0 +1,13 @@
+:root{
+/* 4px base, 8px rhythm; 24px drafting cell */
+--space-0:0;--space-1:2px;--space-2:4px;--space-3:8px;--space-4:12px;--space-5:16px;--space-6:24px;--space-7:32px;--space-8:48px;--space-9:64px;--space-10:96px;--space-11:128px;
+/* layout */
+--grid-cell:24px;--grid-major:120px;--container:1216px;--rail-gutter:32px;--columns:12;/* @kind other */--column-gap:24px;--section-pad:96px;--nav-height:64px;
+/* radii — near-square, drafted */
+--radius-0:0;--radius-1:2px;--radius-2:4px;--radius-pill:999px;
+--radius-control:var(--radius-1);--radius-card:var(--radius-0);
+/* strokes */
+--stroke-hair:1px;/* @kind other */--stroke-frame:1px;/* @kind other */--stroke-bold:1.5px;/* @kind other */--dash:4px 4px;/* @kind other */
+/* corner registration mark */
+--mark-size:10px;/* @kind other */--mark-stroke:1px;/* @kind other */
+}
