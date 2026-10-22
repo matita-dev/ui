@@ -9,7 +9,7 @@ export function Button({ variant = 'default', pill = false, className = '', chil
   return (
     <button type="button" className={`m-btn m-btn--${variant} ${className}`}
       onPointerDown={e => { setSeed(s => s + 1); onPointerDown?.(e); }} {...rest}>
-      <Sketch shape={pill ? 'pill' : 'rect'} radius={0} seed={seed} fill={variant !== 'ghost'} />
+      <Sketch shape={pill ? 'pill' : 'rect'} radius={0} seed={seed} fill={variant !== 'ghost'} shade={variant === 'primary' || variant === 'accent'} />
       <span className="m-btn-label">{children}</span>
     </button>
   );

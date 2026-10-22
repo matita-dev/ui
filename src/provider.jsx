@@ -20,7 +20,7 @@ const clean = c => ({
   strokeSetting: num(c.strokeSetting, 0.5, 4), roughSetting: num(c.roughSetting, 0, 1),
 });
 /** The values components draw with: your setting, or the mode's own default. */
-const resolve = c => ({ ...c, stroke: c.strokeSetting ?? (c.mode === 'pencil' ? 1.9 : 1), rough: c.roughSetting ?? (c.mode === 'pencil' ? 1 : 0) });
+const resolve = c => ({ ...c, stroke: c.strokeSetting ?? (1), rough: c.roughSetting ?? (c.mode === 'pencil' ? 1 : 0) });
 
 /** Theme provider and the page surface: paper, optional construction grid, and the settings for every component below.
     Props set the starting values; `useMatita().set({ mode: 'pencil' })` (or the Tweaks bar) changes them later.

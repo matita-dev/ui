@@ -5,7 +5,7 @@ import { Sketch } from './sketch.jsx';
 export function Badge({ tone = 'neutral', className = '', children, ...rest }) {
   return (
     <span className={`m-badge m-badge--${tone} ${className}`} {...rest}>
-      <Sketch fill />
+      <Sketch fill shade={tone === 'inverse'} />
       <span className="m-badge-label">{children}</span>
     </span>
   );

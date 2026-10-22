@@ -8,7 +8,7 @@ export function Tag({ selected = false, onClick, onRemove, className = '', child
   return (
     <Root type={onClick ? 'button' : undefined} onClick={onClick} aria-pressed={onClick ? selected : undefined}
       className={`m-tag ${selected ? 'm-tag--on ' : ''}${onClick ? 'm-tag--click ' : ''}${className}`} {...rest}>
-      <Sketch fill className="m-tag-box" />
+      <Sketch fill shade={selected} className="m-tag-box" />
       <span className="m-tag-label">{children}</span>
       {onRemove && (
         <span role="button" tabIndex={0} aria-label="Remove" className="m-tag-x"

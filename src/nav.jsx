@@ -24,7 +24,7 @@ export function Breadcrumb({ items = [], className = '', ...rest }) {
 function PageBox({ on, label, disabled, onClick, current, children }) {
   return (
     <button type="button" className={'m-pg' + (on ? ' m-pg--on' : '')} aria-label={label} aria-current={current} disabled={disabled} onClick={onClick}>
-      <Sketch fill />
+      <Sketch fill shade={on} />
       <span className="m-pg-label">{children}</span>
     </button>
   );
@@ -59,7 +59,7 @@ export function Stepper({ steps = [], current = 0, className = '', ...rest }) {
         return (
           <li key={i} aria-current={on ? 'step' : undefined} className={'m-step' + (done ? ' m-step--done' : on ? ' m-step--on' : '')}>
             <div className="m-step-head">
-              <span className="m-step-n"><Sketch fill /><span>{String(i + 1).padStart(2, '0')}</span></span>
+              <span className="m-step-n"><Sketch fill shade={done || on} /><span>{String(i + 1).padStart(2, '0')}</span></span>
               {i < steps.length - 1 && <span className="m-step-rule" aria-hidden="true"><Sketch shape="line" dashed={!done} /></span>}
             </div>
             <div className="m-step-text">

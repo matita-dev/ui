@@ -14,14 +14,14 @@ function Pen({ src, size, seed = 0, exact = false, className = '' }) {
   const [w, h] = size;
   return (
     <svg className={'m-pen ' + className} width={w} height={h} viewBox={`0 0 ${w} ${h}`} aria-hidden="true" focusable="false">
-      {strokes.map((s, i) => <path key={i} d={s.d} strokeWidth={s.w * ctx.stroke * (exact ? 1 : 0.75)} />)}
+      {strokes.map((s, i) => <path key={i} d={s.d} strokeWidth={s.w * ctx.stroke * (rough ? 0.75 : 1)} />)}
     </svg>
   );
 }
 
 /** Registration marks at the four corners of the (relatively positioned) parent. `variant="cross"`: a cross on each corner
     (lines overshoot it). `variant="ticks"`: detached ticks sitting outside the corner, `gap` away from it, for a box
-    that already has its own border. Ticks are always drawn exact, on the same lines and at the same thickness as a straight border. */
+    that already has its own border. In clean modes the ticks and the border are exact and sit on the same lines at the same thickness; in sketchy modes both are drawn by hand. */
 export function CornerMarks({ variant = 'cross', size = 10, gap = 8, tone = 'ink', className = '' }) {
   const ticks = variant === 'ticks', c = size, R = size + gap, s = ticks ? R : size * 2;
   const cross = `L 0 ${c} ${s} ${c}; L ${c} 0 ${c} ${s}`;
@@ -32,7 +32,7 @@ export function CornerMarks({ variant = 'cross', size = 10, gap = 8, tone = 'ink
   const at = (x, y, i) => {
     const o = ticks ? R : c;
     return <span key={i} className="m-mark" style={{ left: x ? 'auto' : -o, right: x ? -o : 'auto', top: y ? 'auto' : -o, bottom: y ? -o : 'auto', width: s, height: s }}>
-      <Pen src={ticks ? tick[y * 2 + x] : cross} size={[s, s]} seed={i} exact={ticks} />
+      <Pen src={ticks ? tick[y * 2 + x] : cross} size={[s, s]} seed={i} />
     </span>;
   };
   return <span className={`m-marks m-tone--${tone} ${className}`} aria-hidden="true">{[at(0, 0, 0), at(1, 0, 1), at(0, 1, 2), at(1, 1, 3)]}</span>;
@@ -43,7 +43,7 @@ export function CornerMarks({ variant = 'cross', size = 10, gap = 8, tone = 'ink
 export function Frame({ as: Tag = 'section', label, meta, marks = false, dashed = false, hatch = false, tone = 'ink', className = '', children, ...rest }) {
   return (
     <Tag className={`m-frame m-tone--${tone} ${hatch ? 'm-frame--hatch ' : ''}${className}`} {...rest}>
-      <Sketch fill dashed={dashed} rough={marks === 'ticks' ? 0 : undefined} shape={marks === true || marks === 'cross' ? (dashed ? 'rect' : 'marks') : 'rect'} />
+      <Sketch fill dashed={dashed} shape={marks === true || marks === 'cross' ? (dashed ? 'rect' : 'marks') : 'rect'} />
       {label && <span className="m-frame-tab m-frame-tab--label">{label}</span>}
       {meta && <span className="m-frame-tab m-frame-tab--meta">{meta}</span>}
       {marks === 'ticks' && <CornerMarks variant="ticks" tone={tone} />}
