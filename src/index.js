@@ -1,12 +1,31 @@
-export { MatitaProvider, useMatita } from './provider.jsx';
+import { withScope } from './provider.jsx';
+import * as C from './controls.js';
+
+export { MatitaProvider, Scope, useMatita, withScope, MODES, GRIDS, DEFAULTS } from './provider.jsx';
 export { Sketch } from './sketch.jsx';
-export { Button, IconButton } from './button.jsx';
-export { Input } from './input.jsx';
-export { Checkbox } from './checkbox.jsx';
-export { Textarea } from './textarea.jsx';
-export { Select } from './select.jsx';
-export { Radio } from './radio.jsx';
-export { Switch } from './switch.jsx';
-export { Card } from './card.jsx';
-export { Divider } from './divider.jsx';
-export { Badge } from './badge.jsx';
+export { Tweaks } from './tweaks.jsx';
+
+/* Every component below takes the shared look attributes: mode, stroke, rough (and grid where it has a surface). */
+export const Button = withScope(C.Button);
+export const IconButton = withScope(C.IconButton);
+export const Input = withScope(C.Input);
+export const Checkbox = withScope(C.Checkbox);
+export const Textarea = withScope(C.Textarea);
+export const Select = withScope(C.Select);
+export const Radio = withScope(C.Radio);
+export const Switch = withScope(C.Switch);
+export const Card = withScope(C.Card);
+export const Divider = withScope(C.Divider);
+export const Badge = withScope(C.Badge);
+export const Tabs = withScope(C.Tabs);
+export const TabList = withScope(C.TabList);
+export const Tab = withScope(C.Tab);
+export const TabPanel = withScope(C.TabPanel);
+export const Tooltip = withScope(C.Tooltip);
+export const Dialog = withScope(C.Dialog);
+export const Frame = withScope(C.Frame);
+export const CornerMarks = withScope(C.CornerMarks);
+export const Hatch = withScope(C.Hatch);
+export const SectionLabel = withScope(C.SectionLabel);
+export const Dimension = withScope(C.Dimension);
+export const Callout = withScope(C.Callout);

@@ -18,16 +18,36 @@ export function frameSource(w, h, radius = 0) {
   ].join(';');
 }
 
+/** Four ruled lines that each run `reach` past both corners they meet, so the corners read as crossed registration marks. */
+export const marksSource = (w, h, reach) => {
+  const W = f(w), H = f(h), a = f(-reach), bw = f(w + reach), bh = f(h + reach);
+  return `L ${a} 0 ${bw} 0; L ${a} ${H} ${bw} ${H}; L 0 ${a} 0 ${bh}; L ${W} ${a} ${W} ${bh}`;
+};
+
 /** A single ruled line, for underlines and dividers. */
 export const lineSource = w => `L 0 0 ${f(w)} 0`;
+/** A single vertical ruled line. */
+export const vlineSource = h => `L 0 0 0 ${f(h)}`;
+
+/** Draw a small drawing made of line (L) and polyline (P) primitives only, e.g. corner marks and arrowheads.
+    `rough` 0 returns the same lines as true geometry. */
+export function drawLines(src, key, seed = 0, rough = 1) {
+  if (rough) return drawSource(src, key, seed).p;
+  return src.split(';').map(s => s.trim().split(/\s+/)).filter(a => a[0]).map(([op, ...n]) => {
+    const pts = []; for (let i = 0; i < n.length; i += 2) pts.push(`${n[i]} ${n[i + 1]}`);
+    return { d: 'M' + pts.join('L'), w: 1 };
+  });
+}
 
 /** Snap a measured size to a step so a resize does not redraw on every pixel. */
 export const quantize = (n, step = 8) => Math.max(step, Math.round(n / step) * step);
 
 /** The same shapes as true geometry, no hand. */
-function exactFrame(w, h, radius, shape) {
+function exactFrame(w, h, radius, shape, reach) {
+  if (shape === 'marks') return marksSource(w, h, reach).split(';').map(l => { const [, x1, y1, x2, y2] = l.trim().split(/\s+/); return { d: `M${x1} ${y1}L${x2} ${y2}`, w: 1 }; });
   if (shape === 'ellipse') { const a = f(w / 2), b = f(h / 2); return [{ d: `M0 ${b}A${a} ${b} 0 1 0 ${f(w)} ${b}A${a} ${b} 0 1 0 0 ${b}Z`, w: 1 }]; }
   if (shape === 'line') return [{ d: `M0 0L${f(w)} 0`, w: 1 }];
+  if (shape === 'vline') return [{ d: `M0 0L0 ${f(h)}`, w: 1 }];
   const r = Math.min(shape === 'pill' ? h / 2 : radius, w / 2, h / 2);
   if (r < 1) return [{ d: `M0 0L${f(w)} 0L${f(w)} ${f(h)}L0 ${f(h)}Z`, w: 1 }];
   const W = f(w), H = f(h), R = f(r), a = `A${R} ${R} 0 0 1`;
@@ -35,8 +55,8 @@ function exactFrame(w, h, radius, shape) {
 }
 
 /** Strokes for a frame. `key` + `seed` fix the drawing; `rough` 0 = exact shape, above 0 = the hand. */
-export function drawFrame({ w, h, radius = 0, shape = 'rect', key, seed = 0, rough = 1 }) {
-  if (!rough) return exactFrame(w, h, radius, shape);
-  const src = shape === 'line' ? lineSource(w) : shape === 'ellipse' ? `E ${f(w / 2)} ${f(h / 2)} ${f(w / 2)} ${f(h / 2)}` : frameSource(w, h, shape === 'pill' ? h / 2 : radius);
+export function drawFrame({ w, h, radius = 0, shape = 'rect', reach = 8, key, seed = 0, rough = 1 }) {
+  if (!rough) return exactFrame(w, h, radius, shape, reach);
+  const src = shape === 'marks' ? marksSource(w, h, reach) : shape === 'line' ? lineSource(w) : shape === 'vline' ? vlineSource(h) : shape === 'ellipse' ? `E ${f(w / 2)} ${f(h / 2)} ${f(w / 2)} ${f(h / 2)}` : frameSource(w, h, shape === 'pill' ? h / 2 : radius);
   return drawSource(src, key, seed).p;
 }

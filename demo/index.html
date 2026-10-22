@@ -3,10 +3,11 @@
 <title>@matita/ui · milestone 1</title>
 <link rel="stylesheet" href="ui.css">
 <style>
-  body { margin: 0; background: var(--m-paper); color: #1d1d20; font-family: var(--m-font); }
-  @media (prefers-color-scheme: dark) { body { color: #ececf0; } }
+  body { margin: 0; font: 14px/1.6 var(--m-font); letter-spacing: -.005em; }
+  .m-root { min-height: 100vh; }
   main { max-width: 640px; margin: 0 auto; padding: 48px 20px 80px; display: grid; gap: 36px; }
-  h1 { font-size: 1.5rem; margin: 0; } h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; opacity: .6; margin: 0 0 14px; }
+  h1 { font: 500 32px/1.15 var(--m-font); letter-spacing: -.035em; margin: 0; }
+  h2 { font: 500 11px/1 var(--m-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--m-ink-3); margin: 0 0 14px; }
   .row { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
   .stack { display: grid; gap: 18px; }
 </style></head>
