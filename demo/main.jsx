@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import { useState } from 'react';
-import { MatitaProvider, Button, IconButton, Input, Checkbox, Textarea, Select, Radio, Switch, Card, Divider, Badge, Tabs, TabList, Tab, TabPanel, Tooltip, Dialog, Frame, Hatch, SectionLabel, Dimension, Callout, Tweaks } from '@matita/ui';
+import { MatitaProvider, Button, IconButton, Input, Checkbox, Textarea, Select, Radio, Switch, Card, Divider, Badge, Tabs, TabList, Tab, TabPanel, Tooltip, Dialog, Frame, Hatch, SectionLabel, Dimension, Callout, Tweaks, Icon, Tag, Breadcrumb, Pagination, Stepper, Menu, Table, Toast } from '@matita/ui';
 
 /* Local-only inspection aid (not part of the library): enlarges the page content to check line detail.
    It renders only on localhost or with ?dev, so a hosted demo never shows it. */
@@ -17,7 +17,7 @@ function DevZoom() {
 }
 
 function App() {
-  const [dlg, setDlg] = useState(false);
+  const [dlg, setDlg] = useState(false), [tag, setTag] = useState(true), [picked, setPicked] = useState(null);
   return (
     <MatitaProvider mode="ink" grid="lines">
       <Tweaks />
@@ -46,6 +46,36 @@ function App() {
             <Callout n="1" title="Pin a comment" leader>Pin a comment to grid line C/4.</Callout>
             <Callout n="2" title="Redline" tone="red">Review marks and errors only.</Callout>
             <Divider dashed />
+          </div>
+        </section>
+        <section>
+          <h2>Tag, Breadcrumb, Pagination, Stepper</h2>
+          <div className="stack">
+            <div className="row">
+              <Tag>Plain</Tag>
+              <Tag selected={tag} onClick={() => setTag(t => !t)}>Toggle</Tag>
+              <Tag onRemove={() => {}}>Removable</Tag>
+              <IconButton label="Search" icon="search" />
+              <IconButton label="Settings" icon="settings" variant="primary" />
+              <Icon name="ruler" size={24} />
+            </div>
+            <Breadcrumb items={[{ label: 'Sheets', href: '#' }, { label: 'A-201', href: '#' }, { label: 'Rev. C' }]} />
+            <Pagination count={12} defaultPage={5} />
+            <Stepper current={1} steps={[{ label: 'Upload', meta: 'PDF, DWG' }, { label: 'Review', meta: '2 of 4' }, { label: 'Issue' }]} />
+          </div>
+        </section>
+        <section>
+          <h2>Menu, Table, Toast</h2>
+          <div className="stack">
+            <Menu trigger={<Button>Actions</Button>} onSelect={id => setPicked(id)} items={[
+              { heading: 'Sheet' }, { id: 'open', label: 'Open', icon: 'folder-open', shortcut: '↵' },
+              { id: 'copy', label: 'Copy link', icon: 'link' }, { divider: true },
+              { id: 'del', label: 'Delete', icon: 'trash', danger: true }, { id: 'off', label: 'Locked', disabled: true }]} />
+            <p style={{ margin: 0 }}>Picked: {picked ?? 'nothing yet'}</p>
+            <Table caption="Sheet index" columns={[{ key: 'id', label: 'No.', mono: true }, { key: 'title', label: 'Title' }, { key: 'rev', label: 'Rev.', align: 'right', mono: true }]}
+              rows={[{ id: 'A-101', title: 'Ground floor plan', rev: 'C' }, { id: 'A-201', title: 'Sections', rev: 'B' }, { id: 'A-301', title: 'Elevations', rev: 'A' }]} />
+            <Toast tone="success" title="Sheet exported" onClose={() => {}}>A-201.pdf · 2.4 MB</Toast>
+            <Toast tone="danger" title="Export failed">The file is locked by another reviewer.</Toast>
           </div>
         </section>
         <section>

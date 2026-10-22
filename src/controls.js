@@ -13,3 +13,8 @@ export { Tabs, TabList, Tab, TabPanel } from './tabs.jsx';
 export { Tooltip } from './tooltip.jsx';
 export { Dialog } from './dialog.jsx';
 export { Frame, CornerMarks, Hatch, SectionLabel, Dimension, Callout } from './drafting.jsx';
+export { Icon } from './icon.jsx';
+export { Tag } from './tag.jsx';
+export { Breadcrumb, Pagination, Stepper, Menu } from './nav.jsx';
+export { Table } from './data.jsx';
+export { Toast } from './toast.jsx';
