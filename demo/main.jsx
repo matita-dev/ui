@@ -1,11 +1,27 @@
 import { createRoot } from 'react-dom/client';
 import { useState } from 'react';
-import { MatitaProvider, Button, IconButton, Input, Checkbox, Textarea, Select, Radio, Switch, Card, Divider, Badge, Tabs, TabList, Tab, TabPanel, Tooltip, Dialog, Frame, Hatch, SectionLabel, Dimension, Callout } from '@matita/ui';
+import { MatitaProvider, Button, IconButton, Input, Checkbox, Textarea, Select, Radio, Switch, Card, Divider, Badge, Tabs, TabList, Tab, TabPanel, Tooltip, Dialog, Frame, Hatch, SectionLabel, Dimension, Callout, Tweaks } from '@matita/ui';
+
+/* Local-only inspection aid (not part of the library): enlarges the page content to check line detail.
+   It renders only on localhost or with ?dev, so a hosted demo never shows it. */
+const DEV = typeof location !== 'undefined' && (/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) || location.search.includes('dev'));
+function DevZoom() {
+  const [z, setZ] = useState(1);
+  return (
+    <label style={{ position: 'fixed', right: 12, bottom: 12, zIndex: 50, display: 'flex', gap: 8, alignItems: 'center', padding: '6px 10px', background: 'var(--m-paper-0)', boxShadow: '0 0 0 1px var(--m-line)', font: '500 11px/1 var(--m-mono)', textTransform: 'uppercase', letterSpacing: '.08em' }}>
+      Dev zoom
+      <input type="range" min="1" max="4" step="0.25" value={z} onChange={e => { const v = Number(e.target.value); setZ(v); document.querySelector('main').style.zoom = v; }} />
+      {Math.round(z * 100)}%
+    </label>
+  );
+}
 
 function App() {
-  const [rough, setRough] = useState(1), [dlg, setDlg] = useState(false);
+  const [dlg, setDlg] = useState(false);
   return (
-    <MatitaProvider rough={rough}>
+    <MatitaProvider mode="ink" grid="lines">
+      <Tweaks />
+      {DEV && <DevZoom />}
       <main>
         <h1>@matita/ui · milestone 1</h1>
         <section>
@@ -14,6 +30,7 @@ function App() {
             <Frame label="Sheet A-201" meta="Rev. C · 1:50" marks>
               <p style={{ margin: 0 }}>A framed section: a drawn border, registration crosses and a title-block tab on the top edge.</p>
             </Frame>
+            <Frame label="Ticks" meta="marks=ticks" marks="ticks" tone="blue"><p style={{ margin: 0 }}>A plain border with detached ticks outside each corner.</p></Frame>
             <Frame label="Optional" dashed><p style={{ margin: 0 }}>A dashed frame marks optional or provisional areas.</p></Frame>
             <div style={{ position: 'relative', padding: '0 16px' }}>
               <Dimension label="6 400 mm" tone="blue" />
@@ -60,8 +77,14 @@ function App() {
           </Dialog>
         </section>
         <section>
-          <h2>Roughness</h2>
-          <Checkbox checked={rough > 0} onChange={e => setRough(e.target.checked ? 1 : 0)}>Sketchy (off = clean lines)</Checkbox>
+          <h2>Per-component attributes</h2>
+          <div className="row">
+            <Button mode="pencil">Pencil</Button>
+            <Button mode="blueprint">Blueprint</Button>
+            <Button stroke={3}>Stroke 3</Button>
+            <Button rough={0}>Clean</Button>
+            <Frame grid="dots" label="grid=dots" style={{ flex: 1, minWidth: 180 }}>Frame grid</Frame>
+          </div>
         </section>
         <section>
           <h2>Button</h2>

@@ -5,7 +5,7 @@
 @font-face { font-family: "Geist Mono"; font-style: normal; font-weight: 400 600; font-display: swap; src: url("./fonts/GeistMono-normal-latin.woff2") format("woff2"); }
 @font-face { font-family: "Instrument Serif"; font-style: italic; font-weight: 400; font-display: swap; src: url("./fonts/InstrumentSerif-italic-latin.woff2") format("woff2"); }
 
-:root {
+:root, .m-root, [data-mode="ink"] {
   --m-paper-0: #fcfbf8;   /* cards, controls */
   --m-paper-1: #f6f4ee;   /* page */
   --m-paper-2: #eeebe3;   /* hover, sunken */
@@ -13,32 +13,69 @@
   --m-ink-2: #353941;
   --m-ink-3: #5e626b;
   --m-line: rgb(20 22 27 / .22);
+  --m-grid-line: rgb(20 22 27 / .08);
   --m-accent: #2748f5;
   --m-accent-soft: #e1e7ff;
   --m-on-accent: #fff;
   --m-redline: #e0442b;
+  --m-pass2: none;
+}
+/* derived tokens are declared wherever a mode is, so they follow it */
+:root, .m-root, [data-mode] {
   --m-paper: var(--m-paper-0);
-  --m-stroke: 1.6;
-  --m-space: 4px;
-  --m-radius: 2px;
-  --m-font: "Geist", ui-sans-serif, system-ui, sans-serif;
-  --m-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
-  --m-serif: "Instrument Serif", "Times New Roman", serif;
   --m-plate: 3px 3px 0 0 var(--m-ink);
   --m-plate-blue: 3px 3px 0 0 var(--m-accent);
   --m-focus: 0 0 0 2px var(--m-paper-0), 0 0 0 3px var(--m-accent);
+}
+:root {
+  --m-stroke: 1.6;
+  --m-space: 4px;
+  --m-radius: 2px;
+  --m-grid-size: 24px;
+  --m-font: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --m-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --m-serif: "Instrument Serif", "Times New Roman", serif;
   --m-ease: cubic-bezier(.2, 0, 0, 1);
   --m-dur: 120ms;
 }
-/* Blueprint: the design system's night mode. White linework on cyanotype, accent turns cyan. */
+/* Modes are token sets. Set data-mode on any element (MatitaProvider, Scope or the mode prop do it for you). */
+/* Pencil: graphite on cartridge paper, blue pencil, lines gone over twice. */
+[data-mode="pencil"] {
+  --m-paper-0: #f4f2eb; --m-paper-1: #ece9e0; --m-paper-2: #e2ded3;
+  --m-ink: #3a3c41; --m-ink-2: #55575d; --m-ink-3: #75777d;
+  --m-line: rgb(58 60 65 / .28); --m-grid-line: rgb(58 60 65 / .1);
+  --m-accent: #3a55c8; --m-accent-soft: #d9defa; --m-on-accent: #fff; --m-redline: #c4472f;
+  --m-pass2: inline;
+}
+/* Blueprint: white linework on cyanotype, the accent turns cyan. */
+[data-mode="blueprint"] { --m-pass2: none; }
+[data-mode="blueprint"] {
+  --m-paper-0: #154c9f; --m-paper-1: #0f4396; --m-paper-2: #0b3d91;
+  --m-ink: #eef5ff; --m-ink-2: #d6e6ff; --m-ink-3: #a9cbf2;
+  --m-line: rgb(238 245 255 / .22); --m-grid-line: rgb(238 245 255 / .1);
+  --m-accent: #9fd3ff; --m-accent-soft: #235bae; --m-on-accent: #0b3d91; --m-redline: #ff8a73;
+}
 @media (prefers-color-scheme: dark) {
-  :root {
+  [data-mode="auto"] {
     --m-paper-0: #154c9f; --m-paper-1: #0f4396; --m-paper-2: #0b3d91;
     --m-ink: #eef5ff; --m-ink-2: #d6e6ff; --m-ink-3: #a9cbf2;
-    --m-line: rgb(238 245 255 / .22);
-    --m-accent: #9fd3ff; --m-accent-soft: #235bae; --m-on-accent: #0b3d91;
+    --m-line: rgb(238 245 255 / .22); --m-grid-line: rgb(238 245 255 / .1);
+    --m-accent: #9fd3ff; --m-accent-soft: #235bae; --m-on-accent: #0b3d91; --m-redline: #ff8a73;
   }
 }
+
+.m-scope { display: contents; }
+.m-pass2 { display: var(--m-pass2, none); stroke-opacity: .55; }
+[data-mode="pencil"] .m-sketch > path { stroke-opacity: .88; }
+
+/* The provider is the page: paper, and the construction grid when asked for. */
+.m-root { background-color: var(--m-paper-1); }
+.m-root[data-grid="lines"] { background-image: linear-gradient(var(--m-grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--m-grid-line) 1px, transparent 1px); background-size: var(--m-grid-size) var(--m-grid-size); }
+.m-root[data-grid="dots"] { background-image: radial-gradient(circle, var(--m-line) 1px, transparent 1.3px); background-size: var(--m-grid-size) var(--m-grid-size); }
+/* A Frame can carry its own grid (grid="lines" | "dots") */
+.m-frame[data-grid="lines"] .m-frame-body, .m-frame[data-grid="dots"] .m-frame-body { background-size: var(--m-grid-size) var(--m-grid-size); }
+.m-frame[data-grid="lines"] .m-frame-body { background-image: linear-gradient(var(--m-grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--m-grid-line) 1px, transparent 1px); }
+.m-frame[data-grid="dots"] .m-frame-body { background-image: radial-gradient(circle, var(--m-line) 1px, transparent 1.3px); }
 
 .m-root { font-family: var(--m-font); font-size: 14px; line-height: 1.6; letter-spacing: -.005em; color: var(--m-ink); }
 
@@ -154,6 +191,22 @@ a.m-card:focus-visible { outline: 0; box-shadow: var(--m-focus); }
 .m-dialog-body { --m-fill: var(--m-paper-0); position: relative; box-shadow: 0 1px 0 var(--m-line), 0 12px 32px -12px rgb(20 22 27 / .22); }
 .m-dialog-content { position: relative; padding: 24px; }
 .m-dialog-title { margin: 0 0 12px; font: 500 24px/1.15 var(--m-font); letter-spacing: -.02em; text-transform: none; opacity: 1; }
+
+/* Tweaks header */
+.m-tweaks { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; padding: 12px 20px; background: var(--m-paper-1); color: var(--m-ink); z-index: 20; }
+.m-tweaks--sticky { position: sticky; top: 0; }
+.m-tweaks-rule { top: auto; bottom: 0; height: 4px; }
+.m-tw-title { font: 500 11px/1 var(--m-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--m-accent); }
+.m-tw-group { display: flex; align-items: center; gap: 10px; }
+.m-tw-label { font: 500 11px/1 var(--m-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--m-ink-3); }
+.m-seg { position: relative; display: inline-flex; --m-fill: var(--m-paper-0); }
+.m-seg-opt { position: relative; padding: 6px 10px; font: 500 12px/1.2 var(--m-font); color: var(--m-ink); background: none; border: 0; cursor: pointer; }
+.m-seg-opt:hover { background: var(--m-paper-2); }
+.m-seg-opt[aria-pressed="true"] { background: var(--m-ink); color: var(--m-paper-0); }
+.m-seg-opt:focus-visible { outline: 0; box-shadow: var(--m-focus); z-index: 1; }
+.m-tw-range { display: inline-flex; align-items: center; gap: 8px; }
+.m-tw-range input { width: 110px; accent-color: var(--m-accent); }
+.m-tw-value { min-width: 2.5ch; font: 500 12px/1 var(--m-mono); color: var(--m-ink-2); }
 
 /* Drafting motifs: Frame, CornerMarks, Hatch, SectionLabel, Dimension, Callout */
 .m-tone--blue { --m-tone: var(--m-accent); }

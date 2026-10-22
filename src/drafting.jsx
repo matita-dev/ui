@@ -8,35 +8,45 @@ import { drawLines } from './rough.js';
    (hatches, grids) stay crisp, as in the design system. `tone`: ink (default), blue or red (review marks only). */
 
 /** A small fixed-size drawing (arrowheads, ticks, crosses) made of line primitives. */
-function Pen({ src, size, seed = 0, className = '' }) {
-  const ctx = useMatita(), key = useId();
-  const strokes = useMemo(() => drawLines(src, key, seed, ctx.rough), [src, key, seed, ctx.rough]);
+function Pen({ src, size, seed = 0, exact = false, className = '' }) {
+  const ctx = useMatita(), key = useId(), rough = exact ? 0 : ctx.rough;
+  const strokes = useMemo(() => drawLines(src, key, seed, rough), [src, key, seed, rough]);
   const [w, h] = size;
   return (
     <svg className={'m-pen ' + className} width={w} height={h} viewBox={`0 0 ${w} ${h}`} aria-hidden="true" focusable="false">
-      {strokes.map((s, i) => <path key={i} d={s.d} strokeWidth={s.w * ctx.stroke * 0.75} />)}
+      {strokes.map((s, i) => <path key={i} d={s.d} strokeWidth={s.w * ctx.stroke * (exact ? 1 : 0.75)} />)}
     </svg>
   );
 }
 
-/** Registration crosses at the four corners of the (relatively positioned) parent. The lines overshoot the corner. */
-export function CornerMarks({ size = 10, tone = 'ink', className = '' }) {
-  const s = size * 2, c = size, src = `L 0 ${c} ${s} ${c}; L ${c} 0 ${c} ${s}`;
-  const at = (x, y, i) => <span key={i} className="m-mark" style={{ left: x ? 'auto' : -c, right: x ? -c : 'auto', top: y ? 'auto' : -c, bottom: y ? -c : 'auto', width: s, height: s }}>
-    <Pen src={src} size={[s, s]} seed={i} />
-  </span>;
+/** Registration marks at the four corners of the (relatively positioned) parent. `variant="cross"`: a cross on each corner
+    (lines overshoot it). `variant="ticks"`: detached ticks sitting outside the corner, `gap` away from it, for a box
+    that already has its own border. Ticks are always drawn exact, on the same lines and at the same thickness as a straight border. */
+export function CornerMarks({ variant = 'cross', size = 10, gap = 8, tone = 'ink', className = '' }) {
+  const ticks = variant === 'ticks', c = size, R = size + gap, s = ticks ? R : size * 2;
+  const cross = `L 0 ${c} ${s} ${c}; L ${c} 0 ${c} ${s}`;
+  const tick = [ // [corner is bottom-right, bottom-left, top-right, top-left] of each tile: a vertical and a horizontal tick
+    `L ${R} 0 ${R} ${size}; L 0 ${R} ${size} ${R}`, `L 0 0 0 ${size}; L ${R - size} ${R} ${R} ${R}`,
+    `L ${R} ${R - size} ${R} ${R}; L 0 0 ${size} 0`, `L 0 ${R - size} 0 ${R}; L ${R - size} 0 ${R} 0`,
+  ];
+  const at = (x, y, i) => {
+    const o = ticks ? R : c;
+    return <span key={i} className="m-mark" style={{ left: x ? 'auto' : -o, right: x ? -o : 'auto', top: y ? 'auto' : -o, bottom: y ? -o : 'auto', width: s, height: s }}>
+      <Pen src={ticks ? tick[y * 2 + x] : cross} size={[s, s]} seed={i} exact={ticks} />
+    </span>;
+  };
   return <span className={`m-marks m-tone--${tone} ${className}`} aria-hidden="true">{[at(0, 0, 0), at(1, 0, 1), at(0, 1, 2), at(1, 1, 3)]}</span>;
 }
 
 /** A framed section: a drawn border with paper behind, and optional mono title-block tabs sitting on the top edge.
-    `label` goes left, `meta` right. `hatch` fills the panel with a 45° hatch, `dashed` draws the border as a guide. */
+    `label` goes left, `meta` right. `marks` (true or "cross") draws the four border lines running past the corners, no extra lines; `marks="ticks"` keeps a plain border and adds detached ticks outside each corner. `hatch` fills the panel with a 45° hatch, `dashed` draws the border as a guide. */
 export function Frame({ as: Tag = 'section', label, meta, marks = false, dashed = false, hatch = false, tone = 'ink', className = '', children, ...rest }) {
   return (
     <Tag className={`m-frame m-tone--${tone} ${hatch ? 'm-frame--hatch ' : ''}${className}`} {...rest}>
-      <Sketch fill dashed={dashed} />
+      <Sketch fill dashed={dashed} rough={marks === 'ticks' ? 0 : undefined} shape={marks === true || marks === 'cross' ? (dashed ? 'rect' : 'marks') : 'rect'} />
       {label && <span className="m-frame-tab m-frame-tab--label">{label}</span>}
       {meta && <span className="m-frame-tab m-frame-tab--meta">{meta}</span>}
-      {marks && <CornerMarks tone={tone} />}
+      {marks === 'ticks' && <CornerMarks variant="ticks" tone={tone} />}
       <div className="m-frame-body">{children}</div>
     </Tag>
   );

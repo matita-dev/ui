@@ -3,10 +3,8 @@
 <title>@matita/ui · milestone 1</title>
 <link rel="stylesheet" href="ui.css">
 <style>
-  body { margin: 0; background: var(--m-paper-1); color: var(--m-ink); font: 14px/1.6 var(--m-font); letter-spacing: -.005em; }
-  /* 24px construction grid, only behind the page */
-  body { background-image: linear-gradient(rgb(20 22 27 / .08) 1px, transparent 1px), linear-gradient(90deg, rgb(20 22 27 / .08) 1px, transparent 1px); background-size: 24px 24px; }
-  @media (prefers-color-scheme: dark) { body { background-image: linear-gradient(rgb(238 245 255 / .08) 1px, transparent 1px), linear-gradient(90deg, rgb(238 245 255 / .08) 1px, transparent 1px); } }
+  body { margin: 0; font: 14px/1.6 var(--m-font); letter-spacing: -.005em; }
+  .m-root { min-height: 100vh; }
   main { max-width: 640px; margin: 0 auto; padding: 48px 20px 80px; display: grid; gap: 36px; }
   h1 { font: 500 32px/1.15 var(--m-font); letter-spacing: -.035em; margin: 0; }
   h2 { font: 500 11px/1 var(--m-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--m-ink-3); margin: 0 0 14px; }
