@@ -39,7 +39,7 @@ export function Tweaks({ controls = ['mode', 'grid', 'stroke', 'rough'], title =
   const has = c => controls.includes(c);
   return (
     <header className={`m-tweaks ${sticky ? 'm-tweaks--sticky' : ''} ${className}`} {...rest}>
-      <Sketch shape="line" className="m-tweaks-rule" />
+      <span className="m-tweaks-rule" aria-hidden="true"><Sketch shape="line" /></span>
       <span className="m-tw-title">{title}</span>
       {has('mode') && <Segmented label="Mode" value={mode} options={MODES} onChange={v => set({ mode: v, stroke: null })} />}
       {has('grid') && <Segmented label="Grid" value={grid} options={GRIDS} onChange={v => set({ grid: v })} />}

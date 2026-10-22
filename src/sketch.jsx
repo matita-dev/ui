@@ -3,6 +3,8 @@ import { useMatita } from './provider.jsx';
 import { drawFrame, quantize } from './rough.js';
 import { pencilStrokes } from './pencil-engine.js';
 
+const PAD = 14; // the svg is this much larger than its box on every side
+
 /* The one drawing primitive. An absolutely positioned SVG that fills its (relative) parent and draws a frame around it:
    exact 1px lines when `rough` is 0, the pencil (hand-drawn outlines with pressure, drift and crossed corners) when it is
    above 0. It never takes part in layout, never takes pointer events and is hidden from assistive tech.
@@ -15,7 +17,7 @@ export function Sketch({ shape = 'rect', radius = 0, seed = 0, fill = false, sha
     const el = ref.current; if (!el) return;
     const read = () => {
       const w = el.clientWidth || el.getBoundingClientRect().width, h = el.clientHeight || el.getBoundingClientRect().height;
-      if (w && h) setSize({ w: quantize(w, 4), h: quantize(h, 2) });
+      if (w && h) setSize({ w: quantize(w - 2 * PAD, 4), h: quantize(h - 2 * PAD, 2) });
     };
     read();
     if (typeof ResizeObserver === 'undefined') return;
@@ -30,7 +32,7 @@ export function Sketch({ shape = 'rect', radius = 0, seed = 0, fill = false, sha
 
   return (
     <svg ref={ref} className={'m-sketch ' + (dashed ? 'm-sketch--dashed ' : '') + className} aria-hidden="true" focusable="false"
-      viewBox={`0 0 ${size.w} ${size.h}`} preserveAspectRatio="none">
+      viewBox={`${-PAD} ${-PAD} ${size.w + 2 * PAD} ${size.h + 2 * PAD}`} preserveAspectRatio="none">
       {fill && (shape === 'ellipse'
         ? <ellipse className={'m-sketch-fill' + (hand?.shade.length ? ' is-shaded' : '')} cx={size.w / 2} cy={size.h / 2} rx={size.w / 2} ry={size.h / 2} />
         : <rect className={'m-sketch-fill' + (hand?.shade.length ? ' is-shaded' : '')} width={size.w} height={size.h} rx={rx} />)}
