@@ -65,8 +65,9 @@
 }
 
 .m-scope { display: contents; }
-.m-pass2 { display: var(--m-pass2, none); stroke-opacity: .55; }
-[data-mode="pencil"] .m-sketch > path { stroke-opacity: .88; }
+.m-pass2 { display: var(--m-pass2, none); }
+.m-pass2 path { stroke-opacity: .55 !important; }
+[data-mode="pencil"] .m-sketch path { stroke-opacity: 1; }
 
 /* The provider is the page: paper, and the construction grid when asked for. */
 .m-root { background-color: var(--m-paper-1); }
@@ -362,6 +363,59 @@ a.m-card:focus-visible { outline: 0; box-shadow: var(--m-focus); }
 .m-toast-close { position: relative; display: inline-flex; padding: 2px; color: var(--m-ink-3); background: none; border: 0; cursor: pointer; }
 .m-toast-close:hover { color: var(--m-ink); }
 .m-toast-close:focus-visible { outline: 0; box-shadow: var(--m-focus); }
+
+
+/* ---- Mode looks (Drafting Grid): ink = clean hairlines, pencil = hand-drawn graphite, blueprint = clean on cyanotype ---- */
+@font-face { font-family: "Architects Daughter"; font-style: normal; font-weight: 400; font-display: swap; src: url("./fonts/ArchitectsDaughter-normal-latin.woff2") format("woff2"); }
+:root, .m-root, [data-mode="ink"] {
+  --m-accent-ink: #1b35c9; --m-red-soft: #fde6e2; --m-red-ink: #b8321d; --m-green-soft: #ddf2e6; --m-green-ink: #1e8a55;
+  --m-amber-soft: #fbefd2; --m-amber-ink: #c07a0b; --m-edge-soft: var(--m-line);
+}
+[data-mode="pencil"] {
+  --m-accent-ink: #384c7c; --m-red-soft: #f1e0da; --m-red-ink: #8e3a2d; --m-green-soft: #e0ebe1; --m-green-ink: #48785a;
+  --m-amber-soft: #f1e8d4; --m-amber-ink: #957030; --m-edge-soft: rgb(58 60 65 / .6);
+  --m-font: "Architects Daughter", "Segoe Print", "Bradley Hand", cursive; --m-mono: var(--m-font);
+  font-synthesis-weight: none; letter-spacing: 0;
+}
+[data-mode="blueprint"] { --m-accent-ink: #bfe2ff; --m-edge-soft: var(--m-line); }
+@media (prefers-color-scheme: dark) { [data-mode="auto"] { --m-accent-ink: #bfe2ff; } }
+.m-scope { font-family: var(--m-font); letter-spacing: inherit; }
+.m-scope[data-mode="pencil"] { letter-spacing: 0; }
+
+/* Ink: soft hairlines for fields and panels, strong ink for actions */
+.m-input > .m-sketch, .m-card > .m-sketch, .m-hatch > .m-sketch, .m-seg > .m-sketch, .m-pg > .m-sketch, .m-switch-track > .m-sketch, .m-tag-box { stroke: var(--m-edge-soft); }
+.m-tag-box path { stroke-opacity: 1; }
+.m-check-box { --m-fill: var(--m-paper-0); }
+.m-check-box > .m-sketch { stroke: var(--m-edge-soft); }
+.m-check input:checked ~ .m-check-box > .m-sketch { stroke: var(--m-ink); }
+.m-check:not(.m-radio) input:checked ~ .m-check-box { --m-fill: var(--m-ink); }
+.m-tick { stroke: var(--m-paper-0); }
+.m-dot .m-sketch { stroke: var(--m-ink); }
+.m-dot .m-sketch-fill { --m-fill: var(--m-ink); }
+.m-badge { min-height: 20px; padding: 0 6px; font: 500 10.5px/1 var(--m-mono); border-radius: var(--m-radius); }
+.m-badge .m-sketch path { display: none; }
+.m-badge--neutral { --m-fill: var(--m-paper-2); color: var(--m-ink-2); }
+.m-badge--accent { --m-fill: var(--m-accent-soft); color: var(--m-accent-ink); }
+.m-badge--success { --m-fill: var(--m-green-soft); color: var(--m-green-ink); }
+.m-badge--warning { --m-fill: var(--m-amber-soft); color: var(--m-amber-ink); }
+.m-badge--danger { --m-fill: var(--m-red-soft); color: var(--m-red-ink); }
+.m-badge--outline { --m-fill: transparent; color: var(--m-ink); }
+.m-badge--outline .m-sketch path { display: inline; }
+.m-badge--inverse { --m-fill: var(--m-ink); color: var(--m-paper-0); }
+
+/* Pencil: paper tooth over the page, graphite grain on every stroke, shaded dark fills, hatched tints */
+.m-root[data-mode="pencil"] { position: relative; }
+.m-root[data-mode="pencil"]::after { content: ""; position: fixed; inset: 0; z-index: 70; pointer-events: none; background: url("./textures/paper-tooth.png") 0 0 / 256px 256px; }
+[data-mode="pencil"] .m-sketch { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cfilter id='g' filterUnits='userSpaceOnUse' x='0' y='0' width='512' height='512' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='3' stitchTiles='stitch' result='f'/%3E%3CfeColorMatrix in='f' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -2.6 0 0 0 2.9' result='a'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.045' numOctaves='2' seed='9' stitchTiles='stitch' result='l'/%3E%3CfeColorMatrix in='l' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -.5 0 0 0 1.22' result='b'/%3E%3CfeComposite in='a' in2='b' operator='arithmetic' k1='1'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23g)'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cfilter id='g' filterUnits='userSpaceOnUse' x='0' y='0' width='512' height='512' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='3' stitchTiles='stitch' result='f'/%3E%3CfeColorMatrix in='f' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -2.6 0 0 0 2.9' result='a'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.045' numOctaves='2' seed='9' stitchTiles='stitch' result='l'/%3E%3CfeColorMatrix in='l' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -.5 0 0 0 1.22' result='b'/%3E%3CfeComposite in='a' in2='b' operator='arithmetic' k1='1'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23g)'/%3E%3C/svg%3E"); -webkit-mask-size: 512px 512px; mask-size: 512px 512px; }
+[data-mode="pencil"] :is(.m-pen, .m-icon, .m-tick) { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cfilter id='g' filterUnits='userSpaceOnUse' x='0' y='0' width='512' height='512' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='3' stitchTiles='stitch' result='f'/%3E%3CfeColorMatrix in='f' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -4 0 0 0 3.25' result='a'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.045' numOctaves='2' seed='9' stitchTiles='stitch' result='l'/%3E%3CfeColorMatrix in='l' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1.2 0 0 0 1.5' result='b'/%3E%3CfeComposite in='a' in2='b' operator='arithmetic' k1='1'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23g)'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cfilter id='g' filterUnits='userSpaceOnUse' x='0' y='0' width='512' height='512' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='3' stitchTiles='stitch' result='f'/%3E%3CfeColorMatrix in='f' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -4 0 0 0 3.25' result='a'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.045' numOctaves='2' seed='9' stitchTiles='stitch' result='l'/%3E%3CfeColorMatrix in='l' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1.2 0 0 0 1.5' result='b'/%3E%3CfeComposite in='a' in2='b' operator='arithmetic' k1='1'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23g)'/%3E%3C/svg%3E"); -webkit-mask-size: 512px 512px; mask-size: 512px 512px; }
+[data-mode="pencil"] :is(.m-btn--primary, .m-btn--accent, .m-tag--on, .m-seg-opt[aria-pressed="true"], .m-pg--on, .m-step--done .m-step-n, .m-step--on .m-step-n, .m-hatch--poche, .m-badge--inverse, .m-check:not(.m-radio) input:checked ~ .m-check-box, .m-switch input:checked ~ .m-switch-track)::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; background: url("./textures/pencil-shade.png") 0 0 / 96px 96px; }
+[data-mode="pencil"] .m-badge:is(.m-badge--neutral, .m-badge--accent, .m-badge--success, .m-badge--warning, .m-badge--danger)::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; background: url("./textures/pencil-tint.png") 0 0 / 96px 96px; }
+[data-mode="pencil"] :is(.m-hatch--diagonal, .m-frame--hatch)::before { background-image: url("./textures/pencil-hatch.png"); background-size: 120px 120px; }
+[data-mode="pencil"] .m-hatch--dense::before { background-image: url("./textures/pencil-hatch.png"); background-size: 72px 72px; }
+[data-mode="pencil"] .m-hatch--cross::before { background-image: url("./textures/pencil-hatch.png"), url("./textures/pencil-hatch-b.png"); background-size: 120px 120px; }
+[data-mode="pencil"] .m-seg-opt { font-family: var(--m-font); }
 
 @media (prefers-reduced-motion: reduce) { .m-tick path, .m-dot, .m-knob, .m-btn, .m-card, .m-input { transition: none; } }
 @media print { .m-btn { --m-fill: transparent; } }

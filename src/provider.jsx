@@ -1,33 +1,41 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 /* Look settings. They flow from the provider down; any component can override them for itself and its children
-   with the same names as props (see withScope). `mode`: ink, pencil, blueprint or auto (ink by day, blueprint when the
-   system is dark). `grid`: none, lines or dots. `stroke`: line thickness multiplier. `rough`: 0 = clean lines, above 0 = the hand. */
+   with the same names as props (see withScope).
+   `mode`: ink (clean 1px drawing), pencil (hand-drawn graphite), blueprint (clean, white on blue) or auto (ink by day,
+   blueprint when the system is dark). `grid`: none, lines or dots.
+   `rough` (0 = clean lines, 1 = the hand) and `stroke` (line thickness) follow the mode unless you set them:
+   ink and blueprint draw clean 1px lines, pencil draws by hand. Any mode can be sketchy: set rough={1}. */
 export const MODES = ['ink', 'pencil', 'blueprint', 'auto'];
 export const GRIDS = ['none', 'lines', 'dots'];
-export const DEFAULTS = { mode: 'ink', grid: 'none', gridSize: 24, stroke: 1.6, rough: 1 };
+export const DEFAULTS = { mode: 'ink', grid: 'none', gridSize: 24, stroke: null, rough: null };
 
-const Ctx = createContext({ ...DEFAULTS, set: () => {} });
+const Ctx = createContext({ ...DEFAULTS, stroke: 1, rough: 0, strokeSetting: null, roughSetting: null, set: () => {} });
 
 const pick = (v, list, fallback) => (list.includes(v) ? v : fallback);
+const num = (v, lo, hi) => (v === null || v === undefined || v === 'auto' || Number.isNaN(Number(v)) ? null : Math.min(hi, Math.max(lo, Number(v))));
 const clean = c => ({
   mode: pick(c.mode, MODES, DEFAULTS.mode), grid: pick(c.grid, GRIDS, DEFAULTS.grid),
   gridSize: Math.max(8, Number(c.gridSize) || DEFAULTS.gridSize),
-  stroke: Math.min(4, Math.max(0.5, Number(c.stroke) || DEFAULTS.stroke)),
-  rough: Math.min(1, Math.max(0, Number(c.rough ?? DEFAULTS.rough))),
+  strokeSetting: num(c.strokeSetting, 0.5, 4), roughSetting: num(c.roughSetting, 0, 1),
 });
+/** The values components draw with: your setting, or the mode's own default. */
+const resolve = c => ({ ...c, stroke: c.strokeSetting ?? (c.mode === 'pencil' ? 1.9 : 1), rough: c.roughSetting ?? (c.mode === 'pencil' ? 1 : 0) });
 
 /** Theme provider and the page surface: paper, optional construction grid, and the settings for every component below.
-    Props set the starting values; `useMatita().set({ mode: 'pencil' })` (or the Tweaks bar) changes them later. */
+    Props set the starting values; `useMatita().set({ mode: 'pencil' })` (or the Tweaks bar) changes them later.
+    `set({ stroke: null })` or `set({ rough: null })` hands that setting back to the mode. */
 export function MatitaProvider({ mode, grid, gridSize, stroke, rough, style, className = '', children, ...rest }) {
-  const [cfg, setCfg] = useState(() => clean({ mode, grid, gridSize, stroke, rough }));
-  useEffect(() => { setCfg(clean({ mode, grid, gridSize, stroke, rough })); }, [mode, grid, gridSize, stroke, rough]);
-  const set = useCallback(patch => setCfg(c => clean({ ...c, ...patch })), []);
-  const value = useMemo(() => ({ ...cfg, set }), [cfg, set]);
+  const [cfg, setCfg] = useState(() => clean({ mode, grid, gridSize, strokeSetting: stroke, roughSetting: rough }));
+  useEffect(() => { setCfg(clean({ mode, grid, gridSize, strokeSetting: stroke, roughSetting: rough })); }, [mode, grid, gridSize, stroke, rough]);
+  const set = useCallback(({ stroke: s, rough: r, ...patch }) => setCfg(c => clean({
+    ...c, ...patch, ...(s !== undefined && { strokeSetting: s }), ...(r !== undefined && { roughSetting: r }),
+  })), []);
+  const value = useMemo(() => ({ ...resolve(cfg), set }), [cfg, set]);
   return (
     <Ctx.Provider value={value}>
       <div className={'m-root ' + className} data-mode={cfg.mode} data-grid={cfg.grid}
-        style={{ '--m-stroke': cfg.stroke, '--m-grid-size': cfg.gridSize + 'px', ...style }} {...rest}>{children}</div>
+        style={{ '--m-stroke': value.stroke, '--m-grid-size': cfg.gridSize + 'px', ...style }} {...rest}>{children}</div>
     </Ctx.Provider>
   );
 }
@@ -36,8 +44,11 @@ export function MatitaProvider({ mode, grid, gridSize, stroke, rough, style, cla
 export function Scope({ mode, stroke, rough, children }) {
   const parent = useContext(Ctx);
   const value = useMemo(() => {
-    const c = clean({ ...parent, ...(mode !== undefined && { mode }), ...(stroke !== undefined && { stroke }), ...(rough !== undefined && { rough }) });
-    return { ...parent, ...c };
+    const next = clean({
+      mode: mode !== undefined ? mode : parent.mode, grid: parent.grid, gridSize: parent.gridSize,
+      strokeSetting: stroke !== undefined ? stroke : parent.strokeSetting, roughSetting: rough !== undefined ? rough : parent.roughSetting,
+    });
+    return { ...parent, ...resolve(next) };
   }, [parent, mode, stroke, rough]);
   return (
     <Ctx.Provider value={value}>

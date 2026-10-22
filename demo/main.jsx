@@ -81,7 +81,7 @@ function App() {
         <section>
           <h2>Card, Divider and Badge</h2>
           <Card as="article">
-            <div className="row"><strong>Drafting grid</strong><Badge>draft</Badge><Badge tone="accent">new</Badge></div>
+            <div className="row"><strong>Drafting grid</strong><Badge>draft</Badge><Badge tone="accent">new</Badge><Badge tone="danger">redline</Badge><Badge tone="outline">1:100</Badge><Badge tone="inverse">issued</Badge></div>
             <Divider />
             <p style={{ margin: 0 }}>A card is a drawn frame and a paper fill behind ordinary content.</p>
           </Card>

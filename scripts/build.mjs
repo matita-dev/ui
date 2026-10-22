@@ -8,7 +8,9 @@ await build({
 });
 copyFileSync('src/ui.css', 'dist/ui.css');
 mkdirSync('dist/fonts', { recursive: true });
+mkdirSync('dist/textures', { recursive: true });
 for (const f of readdirSync('src/fonts')) copyFileSync(`src/fonts/${f}`, `dist/fonts/${f}`);
+for (const f of readdirSync('src/textures')) copyFileSync(`src/textures/${f}`, `dist/textures/${f}`);
 
 if (process.argv.includes('--demo')) {
   await build({
@@ -17,6 +19,8 @@ if (process.argv.includes('--demo')) {
   });
   copyFileSync('src/ui.css', 'demo/ui.css');
   mkdirSync('demo/fonts', { recursive: true });
+  mkdirSync('demo/textures', { recursive: true });
   for (const f of readdirSync('src/fonts')) copyFileSync(`src/fonts/${f}`, `demo/fonts/${f}`);
+  for (const f of readdirSync('src/textures')) copyFileSync(`src/textures/${f}`, `demo/textures/${f}`);
 }
 console.log('built');
