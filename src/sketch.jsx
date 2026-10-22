@@ -4,7 +4,7 @@ import { drawFrame, quantize } from './rough.js';
 
 /* The one drawing primitive. An absolutely positioned SVG that fills its (relative) parent and draws a rough frame
    around it. It never takes part in layout, never takes pointer events and is hidden from assistive tech. */
-export function Sketch({ shape = 'rect', radius = 0, seed = 0, fill = false, rough, className = '' }) {
+export function Sketch({ shape = 'rect', radius = 0, seed = 0, fill = false, rough, dashed = false, className = '' }) {
   const ctx = useMatita(), r = rough ?? ctx.rough, key = useId();
   const ref = useRef(null), [size, setSize] = useState({ w: 120, h: 40 });
 
@@ -24,7 +24,7 @@ export function Sketch({ shape = 'rect', radius = 0, seed = 0, fill = false, rou
   const rx = shape === 'pill' ? size.h / 2 : radius;
 
   return (
-    <svg ref={ref} className={'m-sketch ' + className} aria-hidden="true" focusable="false"
+    <svg ref={ref} className={'m-sketch ' + (dashed ? 'm-sketch--dashed ' : '') + className} aria-hidden="true" focusable="false"
       viewBox={`0 0 ${size.w} ${size.h}`} preserveAspectRatio="none">
       {fill && (shape === 'ellipse'
         ? <ellipse className="m-sketch-fill" cx={size.w / 2} cy={size.h / 2} rx={size.w / 2} ry={size.h / 2} />

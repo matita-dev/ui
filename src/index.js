@@ -10,3 +10,7 @@ export { Switch } from './switch.jsx';
 export { Card } from './card.jsx';
 export { Divider } from './divider.jsx';
 export { Badge } from './badge.jsx';
+export { Tabs, TabList, Tab, TabPanel } from './tabs.jsx';
+export { Tooltip } from './tooltip.jsx';
+export { Dialog } from './dialog.jsx';
+export { Frame, CornerMarks, Hatch, SectionLabel, Dimension, Callout } from './drafting.jsx';
