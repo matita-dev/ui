@@ -149,6 +149,7 @@ function pencilEngine(root,rough=1){
   return()=>{alive=false;mo.disconnect();ro.disconnect();hosts.forEach((h,el)=>{h.svg&&h.svg.remove();if(h.pos)h.pos.style.position='';el.removeAttribute('data-pencil-on');});hosts.clear();};
 }
 
+const useIsoLayoutEffect=typeof window!=='undefined'?React.useLayoutEffect:React.useEffect;
 export const drawingModeContext=React.createContext('ink');
 export function DrawingMode({mode='ink',lettering='hand',animate=true,handDrawn=true,roughness=1,drawKey,drawOnMount=false,children,style,...rest}){
   const ref=React.useRef(null);
@@ -164,7 +165,7 @@ export function DrawingMode({mode='ink',lettering='hand',animate=true,handDrawn=
   React.useEffect(()=>{if(!mounted.current)return;if(mode===shown)return;const t=run(()=>setShown(mode));return()=>clearTimeout(t);},[mode]);
   React.useEffect(()=>{if(!mounted.current)return;const t=run();return()=>clearTimeout(t);},[drawKey]);
   React.useEffect(()=>{mounted.current=true;},[]);
-  React.useLayoutEffect(()=>{
+  useIsoLayoutEffect(()=>{
     if(shown!=='pencil'||!handDrawn||!ref.current||typeof ResizeObserver==='undefined'||typeof MutationObserver==='undefined')return;
     return pencilEngine(ref.current,roughness);
   },[shown,handDrawn,roughness]);
