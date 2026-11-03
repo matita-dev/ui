@@ -9,7 +9,9 @@
 .m-root a:hover{color:var(--blue-700);text-decoration-style:dashed}
 .m-root :is(code,kbd,pre){font-family:var(--font-mono)}
 .m-root ::selection{background:var(--blue-200);color:var(--ink-1)}
-.m-root :focus-visible{outline:none;box-shadow:var(--focus-ring)}
+/* An outline, not a box-shadow: components set their own inline box-shadow (Button's lift), which would hide a shadow ring. */
+.m-root :focus-visible{outline:2px solid var(--blue-500);outline-offset:2px;box-shadow:none}
+.m-root :is(input,select):focus-visible{outline:none}
 /* draw-on / erase keyframes (driven by <DrawingMode>; a/b pairs let the same animation restart) */
 @keyframes dg-in-h-a{from{transform:scaleX(0)}}@keyframes dg-in-h-b{from{transform:scaleX(0)}}
 @keyframes dg-in-v-a{from{transform:scaleY(0)}}@keyframes dg-in-v-b{from{transform:scaleY(0)}}
