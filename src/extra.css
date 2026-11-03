@@ -35,8 +35,12 @@
 /* Responsive. Components size themselves to their space instead of to a screen: widths use min(), long rows wrap or scroll
    inside themselves, and the few with a layout change (Stepper) respond to their own container, not the viewport. */
 .m-stepper { container-type: inline-size; }
+/* The steps stay in a row; below 30rem they get smaller, and only a container under 16.5rem (a 5-step row would break words) stacks them. */
 @container (max-width: 30rem) {
-  .m-stepper > ol { --m-step-ol: column; --m-step-li: row; --m-step-flex: none; --m-step-line: none; --m-step-gap: 14px; }
+  .m-stepper > ol { --m-step-d: 22px; --m-step-nfs: 9.5px; --m-step-fs: 12px; --m-step-mfs: 10px; --m-step-lgap: 6px; --m-step-m: 4px; --m-step-pr: 4px; }
+}
+@container (max-width: 16.5rem) {
+  .m-stepper > ol { --m-step-ol: column; --m-step-li: row; --m-step-flex: none; --m-step-line: none; --m-step-gap: 14px; --m-step-lgap: 10px; --m-step-pr: 0px; }
 }
 .m-table-scroll { max-width: 100%; overflow-x: auto; }
 /* Touch screens: controls that are 32 to 34px with a mouse reach the 44px a finger needs. */
