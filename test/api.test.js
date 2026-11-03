@@ -57,6 +57,7 @@ test('responsive: widths use min(), long rows wrap or scroll, Stepper and touch 
   assert.match(html(h(ui.Toast, {}, 'x')), /width:min\(360px,100%\)/);
   assert.match(html(h(ui.Dialog, { inline: true, title: 't' })), /width:min\(480px,100%\)/);
   assert.match(html(h(ui.Dialog, { inline: true, title: 't', width: '30rem' })), /width:30rem/);
+  assert.match(html(h(ui.Menu, { items: [{ label: 'long' }] })), /min-height:var\(--m-hit-row,34px\)/);
   assert.match(html(h(ui.Pagination, { count: 9 })), /flex-wrap:wrap/);
   assert.match(html(h(ui.Tabs, { items: ['a', 'b'] })), /overflow-x:auto/);
   assert.match(html(h(ui.Table, { columns: [{ key: 'a' }], rows: [{ a: 1 }] })), /^<div class="m-table-scroll"><table/);
