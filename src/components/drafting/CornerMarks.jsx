@@ -26,6 +26,6 @@ export function CornerMarks({variant='cross',size=10,color='var(--ink-1)',offset
   return <>{pos.map((p,i)=>{
     const t=i<2,l=i%2===0;
     return <span key={i} aria-hidden="true" data-pencil={(t?'rule-t':'rule-b')+' '+(l?'rule-l':'rule-r')+(/blue/.test(color)?' blue':/red/.test(color)?' red':'')} style={{position:'absolute',...p,width:size,height:size,pointerEvents:'none',
-      borderTop:t?'1px solid '+color:'none',borderBottom:!t?'1px solid '+color:'none',borderLeft:l?'1px solid '+color:'none',borderRight:!l?'1px solid '+color:'none'}}/>;
+      borderTop:t?'var(--stroke-frame) solid '+color:'none',borderBottom:!t?'var(--stroke-frame) solid '+color:'none',borderLeft:l?'var(--stroke-frame) solid '+color:'none',borderRight:!l?'var(--stroke-frame) solid '+color:'none'}}/>;
   })}</>;
 }

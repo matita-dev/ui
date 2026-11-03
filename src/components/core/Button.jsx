@@ -15,7 +15,7 @@ export function Button({variant='primary',size='md',icon,iconRight,disabled=fals
   const isLink=variant==='link';
   const st={display:fullWidth?'flex':'inline-flex',width:fullWidth?'100%':undefined,alignItems:'center',justifyContent:'center',gap:8,height:isLink?'auto':s.h,padding:isLink?0:'0 '+s.px+'px',
     font:'var(--fw-medium) '+s.fs+'px/1 var(--font-sans)',letterSpacing:'-0.005em',textDecoration:isLink&&hov?'underline':'none',textUnderlineOffset:3,
-    background:hov&&v.hbg&&!disabled?v.hbg:v.bg,color:v.fg,border:'1px solid '+v.bd,borderRadius:'var(--radius-control)',cursor:disabled?'not-allowed':'pointer',
+    background:hov&&v.hbg&&!disabled?v.hbg:v.bg,color:v.fg,border:'var(--stroke-frame) solid '+v.bd,borderRadius:'var(--radius-control)',cursor:disabled?'not-allowed':'pointer',
     opacity:disabled?.4:1,transform:lift?'translate(-2px,-2px)':'none',boxShadow:lift?v.plate:'none',
     transition:'transform var(--dur-fast) var(--ease-draft),box-shadow var(--dur-fast) var(--ease-draft),background var(--dur-fast)',whiteSpace:'nowrap',...style};
   const Tag=href?'a':'button';

@@ -14,8 +14,8 @@ const Ctx = React.createContext({ mode: 'ink', grid: 'none', hand: 'clean', roug
 /** Theme provider and page surface. Props set the starting values; `useMatita().set({ mode: 'pencil' })` (or the Tweaks bar)
     changes them later, and `redraw()` re-drafts the pencil linework. `hand` ('sketchy' or 'clean') draws the linework by hand in any mode; left out it follows the
     mode (sketchy in pencil, clean in ink and blueprint) until set. `roughness` (0 to 1) is how loose the hand is and `lineWeight`
-    (0.5 to 3) how heavy its lines are. All three can also be changed later with set(), in every mode. */
-export function MatitaProvider({ mode = 'ink', grid = 'none', hand, roughness = 1, lineWeight = 1, animate = true, drawOnMount = false, lettering = 'hand', className = '', children, ...rest }) {
+    (0.5 to 3) how heavy the lines are, clean or sketchy. All three can also be changed later with set(), in every mode. */
+export function MatitaProvider({ mode = 'ink', grid = 'none', hand, roughness = 1, lineWeight = 1, animate = true, drawOnMount = false, lettering = 'hand', className = '', style, children, ...rest }) {
   const start = () => ({ mode: pick(mode, MODES, 'ink'), grid: pick(grid, GRIDS, 'none'), hand: HANDS.includes(hand) ? hand : null, roughness: clamp(roughness, 0, 1), lineWeight: clamp(lineWeight, 0.5, 3) });
   const [cfg, setCfg] = React.useState(start);
   const [key, setKey] = React.useState(0);
@@ -24,10 +24,13 @@ export function MatitaProvider({ mode = 'ink', grid = 'none', hand, roughness = 
   const redraw = React.useCallback(() => setKey(k => k + 1), []);
   const hand_ = cfg.hand ?? (cfg.mode === 'pencil' ? 'sketchy' : 'clean'), sketchy = hand_ === 'sketchy';
   const value = React.useMemo(() => ({ ...cfg, hand: hand_, set, redraw }), [cfg, hand_, set, redraw]);
+  /* Clean lines are CSS borders, so line weight scales the stroke tokens they use; the hand (pencil or sketchy) scales its own strokes instead. */
+  const w = sketchy || cfg.mode === 'pencil' ? 1 : cfg.lineWeight;
+  const weights = w === 1 ? undefined : { '--stroke-hair': w + 'px', '--stroke-frame': w + 'px', '--stroke-bold': w * 1.5 + 'px' };
   return (
     <Ctx.Provider value={value}>
       <DrawingMode mode={cfg.mode} drawKey={key} sketch={sketchy && cfg.mode !== 'pencil'} roughness={sketchy ? cfg.roughness : 0} lineWeight={cfg.lineWeight} animate={animate} drawOnMount={drawOnMount} lettering={lettering}
-        className={'m-root ' + className} data-grid={cfg.grid} {...rest}>{children}</DrawingMode>
+        className={'m-root ' + className} data-grid={cfg.grid} style={{ ...weights, ...style }} {...rest}>{children}</DrawingMode>
     </Ctx.Provider>
   );
 }
