@@ -123,7 +123,7 @@ function Page() {
         </Step>
 
         <Step n="02" title="Set the hand" code={step2(cfg)}
-          text="Every setting, as the page uses it now. hand is sketchy or clean in any mode; left out, it follows the mode (sketchy in pencil, clean in ink and blueprint). lineWeight (0.5 to 3) sets the line width in every mode, and roughness (0 to 1) how loose the hand is.">
+          text="Every setting, as the page uses it now. hand is sketchy or clean in any mode; left out, it follows the mode (sketchy in pencil, clean in ink and blueprint). lineWeight (0.5 to 3) sets the line thickness in every mode, and roughness (0 to 1) how loose the hand is.">
           {SHEET}
         </Step>
 
