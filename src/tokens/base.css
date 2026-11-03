@@ -3,6 +3,8 @@
 /* pencil strokes overshoot their element by a few px; clip that at the page edge so it never adds a horizontal scrollbar */
 .m-root:is([data-mode="pencil"],[data-hand="on"]){overflow-x:clip}
 .m-root{margin:0;background-color:var(--surface-page);color:var(--text-body);font:var(--type-body);letter-spacing:var(--tracking-body)}
+/* a long unbroken word (a file name, a URL) wraps instead of pushing its box wider than the screen */
+.m-root{overflow-wrap:anywhere}
 .m-root :is(h1,h2,h3,h4){color:var(--text-primary);font-family:var(--font-sans);font-weight:var(--fw-medium);letter-spacing:var(--tracking-heading);margin:0;text-wrap:balance}
 .m-root p{margin:0;text-wrap:pretty}
 .m-root a{color:var(--text-accent);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}

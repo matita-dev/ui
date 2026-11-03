@@ -1,6 +1,6 @@
 import React from 'react';
 import { CornerMarks } from '../drafting/CornerMarks.jsx';
-export const Card=React.forwardRef(function Card({eyebrow,title,children,media,footer,marks=false,interactive=false,href,padding=24,className,style},ref){
+export const Card=React.forwardRef(function Card({eyebrow,title,children,media,footer,marks=false,interactive=false,href,padding='clamp(16px,3.5vw,24px)',className,style},ref){
   const [hov,setHov]=React.useState(false);
   const Tag=href?'a':'div';const on=interactive&&hov;
   return <Tag ref={ref} className={className} data-pencil={marks?undefined:on?'box':'box-light'} href={href} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
@@ -15,6 +15,6 @@ export const Card=React.forwardRef(function Card({eyebrow,title,children,media,f
       {title&&<h3 style={{margin:0,font:'var(--fw-medium) 20px/1.25 var(--font-sans)',letterSpacing:'-0.015em',color:'var(--text-primary)'}}>{title}</h3>}
       {children&&<div style={{font:'var(--fw-regular) 15px/1.55 var(--font-sans)',color:'var(--text-body)'}}>{children}</div>}
     </div>
-    {footer&&<div data-pencil="rule-t rule-light dashed" style={{padding:'12px '+padding+'px',borderTop:'var(--stroke-frame) dashed var(--line-1)',display:'flex',alignItems:'center',gap:12,font:'var(--fw-regular) 12px/1 var(--font-mono)',color:'var(--text-muted)'}}>{footer}</div>}
+    {footer&&<div data-pencil="rule-t rule-light dashed" style={{padding:'12px '+(typeof padding==='number'?padding+'px':padding),borderTop:'var(--stroke-frame) dashed var(--line-1)',display:'flex',alignItems:'center',gap:12,font:'var(--fw-regular) 12px/1 var(--font-mono)',color:'var(--text-muted)'}}>{footer}</div>}
   </Tag>;
 });

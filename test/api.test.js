@@ -50,3 +50,20 @@ test('components forward refs', () => {
     'Table', 'Dialog', 'Toast', 'Tooltip', 'Frame', 'GridRails', 'Hatch', 'SectionLabel', 'Dimension', 'Callout', 'Divider', 'Sheet', 'TitleBlock', 'ViewTitle', 'ScaleBar', 'NorthArrow', 'LevelMarker', 'DraftProgress'])
     assert.equal(ui[n].$$typeof, FORWARD_REF, n); // withScope wraps each one in a forwardRef
 });
+
+test('responsive: widths use min(), long rows wrap or scroll, Stepper and touch sizes come from CSS', async () => {
+  const { readFileSync } = await import('node:fs');
+  const h = React.createElement, html = el => renderToStaticMarkup(el);
+  assert.match(html(h(ui.Toast, {}, 'x')), /width:min\(360px,100%\)/);
+  assert.match(html(h(ui.Dialog, { inline: true, title: 't' })), /width:min\(480px,100%\)/);
+  assert.match(html(h(ui.Dialog, { inline: true, title: 't', width: '30rem' })), /width:30rem/);
+  assert.match(html(h(ui.Pagination, { count: 9 })), /flex-wrap:wrap/);
+  assert.match(html(h(ui.Tabs, { items: ['a', 'b'] })), /overflow-x:auto/);
+  assert.match(html(h(ui.Table, { columns: [{ key: 'a' }], rows: [{ a: 1 }] })), /^<div class="m-table-scroll"><table/);
+  assert.match(html(h(ui.Stepper, { steps: [{ label: 'a' }] })), /^<div class="m-stepper/);
+  assert.match(html(h(ui.Frame, {}, 'x')), /padding:clamp\(/);
+  const css = readFileSync('dist/ui.css', 'utf8');
+  assert.ok(css.includes('@container (max-width: 30rem)') && css.includes('.m-stepper { container-type: inline-size; }'));
+  assert.ok(css.includes('@media (pointer: coarse) { .m-root { --m-hit: 44px;'));
+  assert.ok(css.includes('overflow-wrap:anywhere'));
+});

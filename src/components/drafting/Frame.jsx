@@ -1,6 +1,6 @@
 import React from 'react';
 import { CornerMarks } from './CornerMarks.jsx';
-export const Frame=React.forwardRef(function Frame({label,meta,children,marks=true,dashed=false,hatch=false,padding=40,tone='ink',className,style},ref){
+export const Frame=React.forwardRef(function Frame({label,meta,children,marks=true,dashed=false,hatch=false,padding='clamp(16px,4vw,40px)',tone='ink',className,style},ref){
   const c=tone==='blue'?'var(--blue-500)':'var(--ink-1)';
   const bd=tone==='blue'?'var(--line-blue)':'var(--line-1)';
   const tab={position:'absolute',top:-7,zIndex:2,background:'var(--surface-page)',padding:'0 8px',font:'var(--fw-medium) 11px/14px var(--font-mono)',letterSpacing:'var(--tracking-label)',textTransform:'uppercase'};
