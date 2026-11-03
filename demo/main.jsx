@@ -34,7 +34,10 @@ function App() {
       <Tweaks />
       {DEV && <DevZoom />}
       <main style={{ maxWidth: 760, margin: '0 auto', padding: '48px 20px 96px', display: 'grid', gap: 48 }}>
-        <h1 style={{ font: 'var(--type-display)', fontSize: 40, letterSpacing: 'var(--tracking-display)' }}>@matita/ui</h1>
+        <div style={{ display: 'grid', gap: 12 }}>
+          <h1 style={{ margin: 0, font: 'var(--type-display)', fontSize: 40, letterSpacing: 'var(--tracking-display)' }}>@matita/ui</h1>
+          <a href="usage.html" style={{ font: 'var(--fw-medium) 11px/1 var(--font-mono)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase' }}>How to use it →</a>
+        </div>
 
         <Section n="01" title="Sheet">
           <Frame label="Fig. 01 — Ink" meta="0.25 mm">
