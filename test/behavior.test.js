@@ -233,3 +233,14 @@ test('Pagination: shows as many pages as the width allows, dropping first and la
     assert.deepEqual(await labels(180), ['…', '20', '…']);                           // three: no first or last
   } finally { delete P.clientWidth; delete P.offsetWidth; }
 });
+
+test('Tabs: a row wider than its space fades the hidden edge and keeps the selected tab in view', async () => {
+  const P = dom.window.HTMLElement.prototype;
+  Object.defineProperty(P, 'clientWidth', { get() { return this.getAttribute('role') === 'tablist' ? 200 : 0; }, configurable: true });
+  Object.defineProperty(P, 'scrollWidth', { get() { return this.getAttribute('role') === 'tablist' ? 600 : 0; }, configurable: true });
+  try {
+    const { box } = await mount(h(ui.Tabs, { items: ['a', 'b', 'c', 'd', 'e', 'f'] }));
+    const t = $(box, '[role=tablist]');
+    assert.equal(t.getAttribute('data-more'), 'end');
+  } finally { delete P.clientWidth; delete P.scrollWidth; }
+});
