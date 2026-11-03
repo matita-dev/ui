@@ -1,5 +1,7 @@
 .m-root,.m-root *,.m-root *::before,.m-root *::after{box-sizing:border-box}
 .m-root{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+/* pencil strokes overshoot their element by a few px; clip that at the page edge so it never adds a horizontal scrollbar */
+.m-root[data-mode="pencil"]{overflow-x:clip}
 .m-root{margin:0;background-color:var(--surface-page);color:var(--text-body);font:var(--type-body);letter-spacing:var(--tracking-body)}
 .m-root :is(h1,h2,h3,h4){color:var(--text-primary);font-family:var(--font-sans);font-weight:var(--fw-medium);letter-spacing:var(--tracking-heading);margin:0;text-wrap:balance}
 .m-root p{margin:0;text-wrap:pretty}
