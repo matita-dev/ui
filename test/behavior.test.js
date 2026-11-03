@@ -195,3 +195,27 @@ test('reduced motion: transitions and the spinner switch off', () => {
   assert.ok(css.includes('@media (prefers-reduced-motion: reduce)') && css.includes('transition-duration: .01ms !important'));
   assert.ok(css.includes('.m-spinner { animation: none !important'));
 });
+
+test('Select: a listbox as wide as the field; arrows, Enter, Escape, type to jump', async () => {
+  const got = [];
+  const { box } = await mount(h(ui.Select, { label: 'Pen', options: ['HB', '2B', { value: 'long', label: 'a very long option label' }, 'Zed'], onChange: v => got.push(v), name: 'pen' }));
+  const b = $(box, '[role=combobox]');
+  assert.equal(b.getAttribute('aria-expanded'), 'false');
+  assert.equal(b.textContent, 'HB');
+  assert.equal($(box, 'input[type=hidden]').value, 'HB');
+  b.focus(); await key(b, 'ArrowDown');
+  assert.equal(b.getAttribute('aria-expanded'), 'true');
+  const lb = $(box, '[role=listbox]');
+  assert.match(lb.parentNode.getAttribute('style'), /left:\s*0(px)?;\s*right:\s*0(px)?/);
+  assert.equal(box.querySelectorAll('[role=option]').length, 4);
+  await key(b, 'ArrowDown'); await key(b, 'Enter');
+  assert.deepEqual(got, ['2B']);
+  assert.equal(b.textContent, '2B');
+  assert.equal($(box, '[role=listbox]'), null);
+  await key(b, 'ArrowDown'); await key(b, 'z'); await key(b, 'Enter');
+  assert.deepEqual(got, ['2B', 'Zed']);
+  await key(b, 'ArrowDown'); await key(b, 'Escape');
+  assert.equal($(box, '[role=listbox]'), null);
+  await click(b); const opt = box.querySelectorAll('[role=option]')[2]; await click(opt);
+  assert.deepEqual(got, ['2B', 'Zed', 'long']);
+});

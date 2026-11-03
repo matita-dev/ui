@@ -168,12 +168,18 @@ export interface SelectOwn {
   options?: Option[];
   value?: string;
   defaultValue?: string;
-  onChange?: React.ChangeEventHandler<HTMLSelectElement>;
+  /** Called with the chosen option's value. */
+  onChange?: (value: string) => void;
+  /** Posts the value with a form, through a hidden input. */
+  name?: string;
+  /** Shown when no option matches the value. */
+  placeholder?: string;
   disabled?: boolean;
   className?: string;
   style?: React.CSSProperties;
 }
-export const Select: React.ForwardRefExoticComponent<WithMode<SelectOwn> & React.RefAttributes<HTMLSelectElement>>;
+/** A listbox as wide as the field; long options wrap inside it. The ref is the field's button. */
+export const Select: React.ForwardRefExoticComponent<WithMode<SelectOwn> & React.RefAttributes<HTMLButtonElement>>;
 
 export interface CheckboxOwn extends Base<HTMLLabelElement> {
   label?: React.ReactNode;
