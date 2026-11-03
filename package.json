@@ -7,7 +7,10 @@
   "type": "module",
   "main": "./dist/index.js",
   "exports": {
-    ".": "./dist/index.js",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
     "./ui.css": "./dist/ui.css"
   },
   "files": [
@@ -16,16 +19,19 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "demo": "node scripts/build.mjs --demo",
-    "test": "node --test"
+    "test": "node --test && tsc -p test/types"
   },
   "peerDependencies": {
-    "react": ">=18",
-    "@matita/icons": "^0.3.0"
+    "@matita/icons": "^0.3.0",
+    "react": ">=18"
   },
   "devDependencies": {
+    "@matita/icons": "^0.3.0",
+    "@types/react": "^18.3.31",
     "esbuild": "^0.25.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "@matita/icons": "^0.3.0"
-  }
+    "typescript": "^5.9.3"
+  },
+  "types": "./dist/index.d.ts"
 }

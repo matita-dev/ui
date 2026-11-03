@@ -1,9 +1,9 @@
 import React from 'react';
 import { CornerMarks } from '../drafting/CornerMarks.jsx';
 import { IconButton } from '../core/IconButton.jsx';
-export function Dialog({open=true,onClose,eyebrow,title,children,footer,width=480,inline=false,marks=true}){
+export const Dialog=React.forwardRef(function Dialog({open=true,onClose,eyebrow,title,children,footer,width=480,inline=false,marks=true,className},ref){
   if(!open) return null;
-  const panel=<div role="dialog" data-pencil={marks?undefined:'box'} aria-modal="true" onClick={e=>e.stopPropagation()} style={{position:'relative',width,maxWidth:'100%',background:'var(--paper-0)',border:marks?'0':'var(--stroke-frame) solid var(--ink-1)',boxShadow:'var(--shadow-plate)'}}>
+  const panel=<div ref={ref} className={className} role="dialog" data-pencil={marks?undefined:'box'} aria-modal="true" onClick={e=>e.stopPropagation()} style={{position:'relative',width,maxWidth:'100%',background:'var(--paper-0)',border:marks?'0':'var(--stroke-frame) solid var(--ink-1)',boxShadow:'var(--shadow-plate)'}}>
     {marks&&<CornerMarks overshoot="top-left"/>}
     <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',gap:16,padding:'20px 20px 0 24px'}}>
       <div style={{display:'flex',flexDirection:'column',gap:10,paddingTop:4}}>
@@ -18,4 +18,4 @@ export function Dialog({open=true,onClose,eyebrow,title,children,footer,width=48
   if(inline) return panel;
   return <div onClick={onClose} style={{position:'fixed',inset:0,zIndex:'var(--z-overlay)',display:'flex',alignItems:'center',justifyContent:'center',padding:24,
     background:'color-mix(in srgb,var(--surface-page) 78%,transparent)',backdropFilter:'blur(2px)',backgroundImage:'var(--hatch-45)'}}>{panel}</div>;
-}
+});

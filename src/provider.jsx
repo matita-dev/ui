@@ -42,7 +42,7 @@ export function Scope({ mode = 'ink', children }) {
 
 /** Give a component a `mode` attribute: it renders in its own scope. Without it the component renders as is. */
 export function withScope(Component) {
-  const Scoped = ({ mode, ...props }) => (mode === undefined ? <Component {...props} /> : <Scope mode={mode}><Component {...props} /></Scope>);
+  const Scoped = React.forwardRef(({ mode, ...props }, ref) => (mode === undefined ? <Component ref={ref} {...props} /> : <Scope mode={mode}><Component ref={ref} {...props} /></Scope>));
   Scoped.displayName = Component.displayName || Component.name;
   return Scoped;
 }

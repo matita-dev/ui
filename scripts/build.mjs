@@ -19,6 +19,7 @@ await build({
   loader: { '.js': 'jsx' }, external: ['react', 'react/jsx-runtime', '@matita/icons/engine'],
 });
 assets('dist');
+copyFileSync('src/index.d.ts', 'dist/index.d.ts');
 
 if (process.argv.includes('--demo')) {
   await build({

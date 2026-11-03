@@ -1,6 +1,6 @@
 import React from 'react';
-export function Stepper({steps=[],current=0,style}){
-  return <ol style={{display:'flex',margin:0,padding:0,listStyle:'none',...style}}>
+export const Stepper=React.forwardRef(function Stepper({steps=[],current=0,className,style},ref){
+  return <ol ref={ref} className={className} style={{display:'flex',margin:0,padding:0,listStyle:'none',...style}}>
     {steps.map((s,i)=>{const done=i<current,on=i===current;const c=on?'var(--blue-500)':done?'var(--ink-1)':'var(--ink-4)';
       return <li key={i} aria-current={on?'step':undefined} style={{flex:1,display:'flex',flexDirection:'column',gap:10,minWidth:0}}>
         <div style={{display:'flex',alignItems:'center'}}>
@@ -13,4 +13,4 @@ export function Stepper({steps=[],current=0,style}){
         </div>
       </li>;})}
   </ol>;
-}
+});

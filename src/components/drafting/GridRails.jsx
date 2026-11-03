@@ -1,8 +1,8 @@
 import React from 'react';
-export function GridRails({children,grid='none',maxWidth='var(--container)',rails=true,columns=0,style,...rest}){
+export const GridRails=React.forwardRef(function GridRails({children,grid='none',maxWidth='var(--container)',rails=true,columns=0,className,style,...rest},ref){
   const rail={position:'absolute',top:0,bottom:0,width:1,background:'var(--guide-v)',pointerEvents:'none'};
   const bg=grid==='cells'?{backgroundImage:'var(--pattern-grid)',backgroundSize:'var(--pattern-grid-size)'}:grid==='dots'?{backgroundImage:'var(--pattern-dots)',backgroundSize:'var(--pattern-grid-size)'}:{};
-  return <div {...rest} style={{position:'relative',...bg,...style}}>
+  return <div ref={ref} className={className} {...rest} style={{position:'relative',...bg,...style}}>
     <div style={{position:'relative',maxWidth,margin:'0 auto',padding:'0 var(--rail-gutter)'}}>
       {rails&&<><span aria-hidden="true" data-pencil="v" style={{...rail,left:0}}/><span aria-hidden="true" data-pencil="v" style={{...rail,right:0}}/></>}
       {columns>0&&<div aria-hidden="true" style={{position:'absolute',inset:'0 var(--rail-gutter)',display:'grid',gridTemplateColumns:'repeat('+columns+',1fr)',gap:'var(--column-gap)',pointerEvents:'none'}}>
@@ -11,4 +11,4 @@ export function GridRails({children,grid='none',maxWidth='var(--container)',rail
       <div style={{position:'relative'}}>{children}</div>
     </div>
   </div>;
-}
+});

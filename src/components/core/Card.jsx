@@ -1,9 +1,9 @@
 import React from 'react';
 import { CornerMarks } from '../drafting/CornerMarks.jsx';
-export function Card({eyebrow,title,children,media,footer,marks=false,interactive=false,href,padding=24,style}){
+export const Card=React.forwardRef(function Card({eyebrow,title,children,media,footer,marks=false,interactive=false,href,padding=24,className,style},ref){
   const [hov,setHov]=React.useState(false);
   const Tag=href?'a':'div';const on=interactive&&hov;
-  return <Tag data-pencil={marks?undefined:on?'box':'box-light'} href={href} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
+  return <Tag ref={ref} className={className} data-pencil={marks?undefined:on?'box':'box-light'} href={href} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
     style={{position:'relative',display:'flex',flexDirection:'column',background:'var(--surface-card)',color:'inherit',textDecoration:'none',
     border:marks?'0':'var(--stroke-frame) solid '+(on?'var(--ink-1)':'var(--line-1)'),borderRadius:marks?0:'var(--radius-card)',
     transform:on?'translate(-2px,-2px)':'none',boxShadow:on?'var(--shadow-plate)':'none',cursor:interactive?'pointer':'default',
@@ -17,4 +17,4 @@ export function Card({eyebrow,title,children,media,footer,marks=false,interactiv
     </div>
     {footer&&<div data-pencil="rule-t rule-light dashed" style={{padding:'12px '+padding+'px',borderTop:'var(--stroke-frame) dashed var(--line-1)',display:'flex',alignItems:'center',gap:12,font:'var(--fw-regular) 12px/1 var(--font-mono)',color:'var(--text-muted)'}}>{footer}</div>}
   </Tag>;
-}
+});
