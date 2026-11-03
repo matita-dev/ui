@@ -151,7 +151,7 @@ function pencilEngine(root,rough=1,weight=1){
 
 const useIsoLayoutEffect=typeof window!=='undefined'?React.useLayoutEffect:React.useEffect;
 export const drawingModeContext=React.createContext('ink');
-export function DrawingMode({mode='ink',lettering='hand',animate=true,handDrawn=true,roughness=1,lineWeight=1,drawKey,drawOnMount=false,children,style,...rest}){
+export function DrawingMode({mode='ink',lettering='hand',animate=true,handDrawn=true,sketch=false,roughness=1,lineWeight=1,drawKey,drawOnMount=false,children,style,...rest}){
   const ref=React.useRef(null);
   const [shown,setShown]=React.useState(mode);
   const [phase,setPhase]=React.useState(drawOnMount&&animate&&!reduced()?'in':'idle');
@@ -167,11 +167,11 @@ export function DrawingMode({mode='ink',lettering='hand',animate=true,handDrawn=
   React.useEffect(()=>{if(!mounted.current)return;const t=run(()=>setEpoch(e=>e+1));return()=>clearTimeout(t);},[drawKey]);
   React.useEffect(()=>{mounted.current=true;},[]);
   useIsoLayoutEffect(()=>{
-    if(shown!=='pencil'||!handDrawn||!ref.current||typeof ResizeObserver==='undefined'||typeof MutationObserver==='undefined')return;
+    if((shown!=='pencil'&&!sketch)||!handDrawn||!ref.current||typeof ResizeObserver==='undefined'||typeof MutationObserver==='undefined')return;
     return pencilEngine(ref.current,roughness,lineWeight);
-  },[shown,handDrawn,roughness,lineWeight,epoch]);
+  },[shown,handDrawn,sketch,roughness,lineWeight,epoch]);
   const ab=flip%2?'b':'a';
   const vars=phase==='out'?{'--dg-h':'dg-out-h','--dg-v':'dg-out-v','--dg-s':'dg-out-s','--dg-p':'dg-pout','--dg-dur':OUT-60+'ms','--dg-ease':'cubic-bezier(.6,0,.9,.6)','--dg-k':'.25','--dg-oh':'right center','--dg-ov':'center bottom'}
     :phase==='in'?{'--dg-h':'dg-in-h-'+ab,'--dg-v':'dg-in-v-'+ab,'--dg-s':'dg-in-s-'+ab,'--dg-p':'dg-pin-'+ab,'--dg-dur':'var(--dur-draw)','--dg-ease':'cubic-bezier(.55,.1,.35,1)','--dg-k':'1'}:{};
-  return <div ref={ref} data-drawing-root="" data-mode={shown} data-lettering={lettering} data-drawing={phase} style={{position:'relative',minHeight:'100%',...vars,...style}} {...rest}>{shown==='pencil'&&handDrawn&&<svg aria-hidden="true" width="0" height="0" style={{position:'absolute'}}><filter id="dg-wander" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale={2.4*roughness} xChannelSelector="R" yChannelSelector="G"/></filter></svg>}<drawingModeContext.Provider value={shown}>{children}</drawingModeContext.Provider></div>;
+  return <div ref={ref} data-drawing-root="" data-mode={shown} data-lettering={lettering} data-hand={sketch&&handDrawn?'on':undefined} data-drawing={phase} style={{position:'relative',minHeight:'100%',...vars,...style}} {...rest}>{shown==='pencil'&&handDrawn&&<svg aria-hidden="true" width="0" height="0" style={{position:'absolute'}}><filter id="dg-wander" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale={2.4*roughness} xChannelSelector="R" yChannelSelector="G"/></filter></svg>}<drawingModeContext.Provider value={shown}>{children}</drawingModeContext.Provider></div>;
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { GRIDS, MODES, useMatita } from './provider.jsx';
+import { GRIDS, HANDS, MODES, useMatita } from './provider.jsx';
 
 const LABELS = { ink: 'Ink', pencil: 'Pencil', blueprint: 'Blueprint', sketchy: 'Sketchy', clean: 'Clean', none: 'None', lines: 'Lines', dots: 'Dots' };
 const label = { font: 'var(--fw-medium) 11px/1 var(--font-mono)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--text-muted)' };
@@ -29,10 +29,10 @@ function Range({ name, value, min, max, step, onChange }) {
   );
 }
 
-/** A header bar that edits the provider's look live: mode and grid, plus (pencil only) Hand sketchy or clean, Line thickness and
+/** A header bar that edits the provider's look live: mode and grid, plus Hand (sketchy or clean) in every mode, and, wherever the hand is drawing, Line thickness and
     a Redraw. `controls` picks which to show. */
 export function Tweaks({ controls = ['mode', 'grid', 'hand', 'line', 'redraw'], title = 'Tweaks', sticky = true, style, ...rest }) {
-  const { mode, grid, roughness, lineWeight, set, redraw } = useMatita();
+  const { mode, grid, hand, lineWeight, set, redraw } = useMatita();
   const has = c => controls.includes(c);
   return (
     <header data-pencil="rule-b" style={{ position: sticky ? 'sticky' : 'relative', top: 0, zIndex: 'var(--z-nav)', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '12px 28px', padding: '12px 20px',
@@ -40,9 +40,9 @@ export function Tweaks({ controls = ['mode', 'grid', 'hand', 'line', 'redraw'], 
       <span style={{ ...label, color: 'var(--text-accent)' }}>{title}</span>
       {has('mode') && <Segmented name="Mode" value={mode} options={MODES} onChange={v => set({ mode: v })} />}
       {has('grid') && <Segmented name="Grid" value={grid} options={GRIDS} onChange={v => set({ grid: v })} />}
-      {has('hand') && mode === 'pencil' && <Segmented name="Hand" value={roughness > 0 ? 'sketchy' : 'clean'} options={['sketchy', 'clean']} onChange={v => set({ roughness: v === 'sketchy' ? 1 : 0 })} />}
-      {has('line') && mode === 'pencil' && <Range name="Line" value={lineWeight} min={0.5} max={3} step={0.1} onChange={v => set({ lineWeight: v })} />}
-      {has('redraw') && mode === 'pencil' && (
+      {has('hand') && <Segmented name="Hand" value={hand} options={HANDS} onChange={v => set({ hand: v })} />}
+      {has('line') && (mode === 'pencil' || hand === 'sketchy') && <Range name="Line" value={lineWeight} min={0.5} max={3} step={0.1} onChange={v => set({ lineWeight: v })} />}
+      {has('redraw') && (mode === 'pencil' || hand === 'sketchy') && (
         <button type="button" onClick={redraw} data-pencil="box-light" style={{ height: 28, padding: '0 12px', border: '1px solid var(--line-1)', borderRadius: 'var(--radius-control)', background: 'var(--surface-card)', cursor: 'pointer', color: 'var(--ink-1)', font: 'var(--fw-medium) 12px/1 var(--font-sans)' }}>Redraw</button>
       )}
     </header>

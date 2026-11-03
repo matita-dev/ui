@@ -1,7 +1,7 @@
 import { withScope } from './provider.jsx';
 import * as C from './components.js';
 
-export { MatitaProvider, Scope, useMatita, withScope, MODES, GRIDS } from './provider.jsx';
+export { MatitaProvider, Scope, useMatita, withScope, MODES, GRIDS, HANDS } from './provider.jsx';
 export { DrawingMode, drawingModeContext, drawAnim } from './drawing.jsx';
 export { Tweaks } from './tweaks.jsx';
 

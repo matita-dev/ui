@@ -11,3 +11,13 @@
 .m-root[data-mode="blueprint"][data-grid="dots"] {
   background-image: var(--pattern-dots), var(--texture-paper), radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.06), transparent 60%), radial-gradient(ellipse at 80% 90%, rgba(0,10,40,.28), transparent 55%), linear-gradient(135deg, #0B3D91 0%, #0F4396 50%, #134A9E 100%);
   background-size: var(--pattern-grid-size), 220px 220px, auto, auto, auto; }
+
+/* The hand in ink and blueprint (Tweaks "Hand: Sketchy", or <MatitaProvider hand="sketchy">): the same strokes as pencil, but crisp
+   (no grain mask) and without the pencil paper. The original borders, fills and shadows step aside as they do in pencil. */
+[data-drawing-root]:not([data-mode="pencil"]) [data-pencil-overlay] { -webkit-mask-image: none; mask-image: none; }
+[data-hand="on"] :is([data-pencil-on~="stroke"],[data-pencil-on~="arrow"]) { border-color: transparent !important; }
+[data-hand="on"] [data-pencil-on~="shadow"] { box-shadow: none !important; }
+[data-hand="on"] :is([data-pencil-on~="line"],[data-pencil-on~="fill"],[data-pencil-on~="clear"]) { background: none !important; }
+[data-hand="on"] [data-pencil-on~="tint"] { background: var(--surface-card) !important; }
+[data-hand="on"] :is([data-pencil-on~="fill"],[data-pencil-on~="tint"]) { isolation: isolate; }
+[data-hand="on"] [data-pencil-on~="hatch"] { background-image: none !important; }
