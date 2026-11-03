@@ -219,3 +219,17 @@ test('Select: a listbox as wide as the field; arrows, Enter, Escape, type to jum
   await click(b); const opt = box.querySelectorAll('[role=option]')[2]; await click(opt);
   assert.deepEqual(got, ['2B', 'Zed', 'long']);
 });
+
+test('Pagination: shows as many pages as the width allows, dropping first and last when very narrow', async () => {
+  let navW = 0;
+  const P = dom.window.HTMLElement.prototype;
+  Object.defineProperty(P, 'clientWidth', { get() { return this.tagName === 'NAV' ? navW : 0; }, configurable: true });
+  Object.defineProperty(P, 'offsetWidth', { get() { return this.tagName === 'BUTTON' ? 32 : 0; }, configurable: true });
+  const labels = async w => { navW = w; const { box } = await mount(h(ui.Pagination, { count: 40, defaultPage: 20 })); return [...box.querySelectorAll('nav > *')].slice(1, -1).map(n => n.textContent); };
+  try {
+    assert.deepEqual(await labels(0), ['01', '…', '19', '20', '21', '…', '40']);   // unmeasured: the default seven
+    assert.deepEqual(await labels(400), ['01', '…', '19', '20', '21', '…', '40']);
+    assert.deepEqual(await labels(260), ['01', '…', '20', '…', '40']);               // five slots
+    assert.deepEqual(await labels(180), ['…', '20', '…']);                           // three: no first or last
+  } finally { delete P.clientWidth; delete P.offsetWidth; }
+});
