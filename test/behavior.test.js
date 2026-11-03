@@ -151,3 +151,47 @@ test('focus ring is an outline in every mode (an inline box-shadow cannot hide i
   const css = readFileSync('dist/ui.css', 'utf8');
   assert.match(css, /\.m-root :focus-visible\{outline:2px solid var\(--blue-500\)/);
 });
+
+test('Button: loading blocks clicks but keeps focus; disabled link loses its href', async () => {
+  let n = 0;
+  const { box } = await mount(h('div', null,
+    h(ui.Button, { loading: true, onClick: () => n++, variant: 'danger' }, 'Delete'),
+    h(ui.Button, { href: '/x', disabled: true }, 'Link'),
+    h(ui.Button, { href: '/y' }, 'Live')));
+  const b = $(box, 'button');
+  assert.equal(b.getAttribute('aria-busy'), 'true');
+  assert.equal(b.getAttribute('aria-disabled'), 'true');
+  assert.equal(b.disabled, false, 'stays focusable');
+  assert.ok($(b, '.m-spinner'));
+  await click(b); assert.equal(n, 0);
+  const [dead, live] = box.querySelectorAll('a');
+  assert.equal(dead.getAttribute('href'), null);
+  assert.equal(dead.getAttribute('aria-disabled'), 'true');
+  assert.equal(dead.tabIndex, -1);
+  assert.equal(live.getAttribute('href'), '/y');
+});
+
+test('Tag: the remove control is a real button and does not trigger the tag', async () => {
+  let removed = 0, clicked = 0;
+  const { box } = await mount(h(ui.Tag, { onClick: () => clicked++, onRemove: () => removed++, removeLabel: 'Remove filter' }, 'draft'));
+  const r = $(box, 'button');
+  assert.equal(r.getAttribute('aria-label'), 'Remove filter');
+  await click(r);
+  assert.deepEqual([removed, clicked], [1, 0]);
+});
+
+test('Table: clickable rows are keyboard reachable, headers have scope', async () => {
+  const got = [];
+  const { box } = await mount(h(ui.Table, { columns: [{ key: 'n', label: 'Name' }], rows: [{ id: 1, n: 'a' }, { id: 2, n: 'b' }], onRowClick: r => got.push(r.id) }));
+  assert.equal($(box, 'th').getAttribute('scope'), 'col');
+  const rows = box.querySelectorAll('tbody tr');
+  assert.deepEqual([...rows].map(r => r.tabIndex), [0, 0]);
+  await key(rows[1], 'Enter'); await key(rows[0], ' ');
+  assert.deepEqual(got, [2, 1]);
+});
+
+test('reduced motion: transitions and the spinner switch off', () => {
+  const css = readFileSync('dist/ui.css', 'utf8');
+  assert.ok(css.includes('@media (prefers-reduced-motion: reduce)') && css.includes('transition-duration: .01ms !important'));
+  assert.ok(css.includes('.m-spinner { animation: none !important'));
+});

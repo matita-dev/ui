@@ -21,3 +21,13 @@
 [data-hand="on"] [data-pencil-on~="tint"] { background: var(--surface-card) !important; }
 [data-hand="on"] :is([data-pencil-on~="fill"],[data-pencil-on~="tint"]) { isolation: isolate; }
 [data-hand="on"] [data-pencil-on~="hatch"] { background-image: none !important; }
+
+/* Button loading spinner (a drawn ring, not an icon, so it works before any icon is loaded) */
+.m-spinner { display: inline-block; flex: none; box-sizing: border-box; border: 1.5px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: m-spin .8s linear infinite; }
+@keyframes m-spin { to { transform: rotate(360deg); } }
+
+/* Reduced motion: no transitions or looping animation; state changes are instant and the spinner stops (it is still labelled by aria-busy). */
+@media (prefers-reduced-motion: reduce) {
+  .m-root *, .m-root *::before, .m-root *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+  .m-spinner { animation: none !important; border-right-color: currentColor; opacity: .6; }
+}

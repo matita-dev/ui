@@ -75,7 +75,7 @@ type Native<El extends HTMLElement, Own> = Omit<React.HTMLAttributes<El>, keyof 
 
 /* ---- Core ---- */
 
-export type ButtonVariant = 'primary' | 'accent' | 'secondary' | 'ghost' | 'link';
+export type ButtonVariant = 'primary' | 'accent' | 'secondary' | 'ghost' | 'danger' | 'link';
 export interface ButtonOwn extends Base<HTMLElement> {
   variant?: ButtonVariant;
   size?: Size;
@@ -83,7 +83,10 @@ export interface ButtonOwn extends Base<HTMLElement> {
   icon?: string;
   /** Icon name from @matita/icons, shown after the label. */
   iconRight?: string;
+  /** Native disabled: not focusable, not clickable. On a link (`href`) it removes the href and sets aria-disabled. */
   disabled?: boolean;
+  /** Shows a spinner and blocks clicks but stays focusable (aria-busy, aria-disabled). */
+  loading?: boolean;
   fullWidth?: boolean;
   /** Renders an <a> instead of a <button>. */
   href?: string;
@@ -114,6 +117,8 @@ export interface TagOwn extends Base<HTMLSpanElement> {
   onClick?: React.MouseEventHandler<HTMLSpanElement>;
   /** Shows a remove button. */
   onRemove?: () => void;
+  /** Accessible name of the remove button. Default 'Remove'. */
+  removeLabel?: string;
 }
 export const Tag: React.ForwardRefExoticComponent<WithMode<TagOwn>>;
 
