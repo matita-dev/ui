@@ -44,7 +44,7 @@ function Controls() {
   );
 }
 
-/* Steps 1 and 2 follow the Tweaks bar: the props shown are the ones the page is using right now. */
+/* Steps 1 and 2 follow the Tweaks panel: the props shown are the ones the page is using right now. */
 const num = n => String(Math.round(n * 10) / 10);
 function props(cfg, all) {
   const dflt = cfg.mode === 'pencil' ? 'sketchy' : 'clean';
@@ -60,7 +60,7 @@ import '@matita/ui/ui.css';
 export default function App() {
   return (
     <MatitaProvider ${props(cfg)}>
-      <Tweaks />   {/* optional: live mode, grid, hand, line and redraw bar */}
+      <Tweaks floating />   {/* optional: a live panel for mode, grid, hand, line and redraw */}
       <Frame label="Fig. 01">
         <Input label="Drawn by" defaultValue="I. Marlowe" />
         <Badge tone="accent">Issued</Badge>
@@ -106,13 +106,13 @@ function Page() {
   const cfg = useMatita();
   return (
     <>
-      <Tweaks />
+      <Tweaks floating />
       <main style={{ maxWidth: 760, margin: '0 auto', padding: '48px 20px 96px', display: 'grid', gap: 48 }}>
         <div style={{ display: 'grid', gap: 12 }}>
           <h1 style={{ margin: 0, font: 'var(--type-display)', fontSize: 40, letterSpacing: 'var(--tracking-display)' }}>Using @matita/ui</h1>
           <p style={{ margin: 0, color: 'var(--text-muted)', maxWidth: '62ch' }}>
             Wrap the app once. The mode, the grid and the hand then apply to every component, and the provider is the page itself:
-            its background changes with the mode. Use the Tweaks bar above to change the look of this page: the code below follows it.
+            its background changes with the mode. Use the Tweaks panel in the bottom-right corner to change the look of this page: the code below follows it.
           </p>
           <a href="index.html" style={{ font: 'var(--fw-medium) 11px/1 var(--font-mono)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase' }}>All components →</a>
         </div>

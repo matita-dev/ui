@@ -11,7 +11,7 @@ const DEV = typeof location !== 'undefined' && (/^(localhost|127\.0\.0\.1|\[::1\
 function DevZoom() {
   const [z, setZ] = useState(1);
   return (
-    <label style={{ position: 'fixed', right: 12, bottom: 12, zIndex: 50, display: 'flex', gap: 8, alignItems: 'center', padding: '6px 10px', background: 'var(--paper-0)', boxShadow: '0 0 0 1px var(--line-1)', font: '500 11px/1 var(--font-mono)', textTransform: 'uppercase', letterSpacing: '.08em' }}>
+    <label style={{ display: 'flex', gap: 8, alignItems: 'center', font: '500 11px/1 var(--font-mono)', textTransform: 'uppercase', letterSpacing: '.08em' }}>
       Dev zoom
       <input type="range" min="1" max="4" step="0.25" value={z} onChange={e => { const v = Number(e.target.value); setZ(v); document.querySelector('main').style.zoom = v; }} />
       {Math.round(z * 100)}%
@@ -31,8 +31,7 @@ function App() {
   const [dlg, setDlg] = useState(false), [tag, setTag] = useState(true), [picked, setPicked] = useState(null), [tab, setTab] = useState('plan');
   return (
     <MatitaProvider mode="ink" grid="lines">
-      <Tweaks />
-      {DEV && <DevZoom />}
+      <Tweaks floating>{DEV && <DevZoom />}</Tweaks>
       <main style={{ maxWidth: 760, margin: '0 auto', padding: '48px 20px 96px', display: 'grid', gap: 48 }}>
         <div style={{ display: 'grid', gap: 12 }}>
           <h1 style={{ margin: 0, font: 'var(--type-display)', fontSize: 40, letterSpacing: 'var(--tracking-display)' }}>@matita/ui</h1>
