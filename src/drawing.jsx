@@ -22,7 +22,7 @@ const prng=s=>{let a=s>>>0||1;return()=>{a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imu
 function wave(r,len,step){const n=Math.max(2,Math.ceil(len/step)+2),v=[];for(let i=0;i<n;i++)v.push(r()*2-1);
   return s=>{const x=Math.max(0,s)/step,i=Math.min(n-2,Math.floor(x)),f=Math.min(1,x-i),u=(1-Math.cos(f*Math.PI))/2;return v[i]+(v[i+1]-v[i])*u;};}
 /* one ruled pencil stroke as a filled outline */
-let ROUGH=1;
+let ROUGH=1,WEIGHT=1;
 /* the hand: ends drift a little, the stroke bows once (sometimes a faint S) and wanders gently between — all scaled by roughness */
 function wander(r,L,k,tl=.45){if(!(k>0))return()=>0;
   const amp=Math.min(1.6,.35+L*.0045)*k,b1=(r()*2-1)*amp,b2=(r()*2-1)*amp*.3,t0=(r()*2-1)*tl*k,t1=(r()*2-1)*tl*k,wa=Math.min(.5,.1+L/1000)*k,wb=wave(r,L,40+r()*70);
@@ -36,7 +36,7 @@ function stroke(r,x0,y0,x1,y1,w,o={}){
   for(let s=0;;s+=st){const ss=Math.min(s,L);let p=1+wv(ss)*vr;
     if(ss<land)p*=.5+.55*ss/land;else if(ss<land*3)p*=1.06;
     if(L-ss<lift)p*=.28+.72*(L-ss)/lift;
-    const off=path(ss),hw=Math.max(.12,w*p/2+(r()-.5)*.1),cx=x0+ux*ss+nx*off,cy=y0+uy*ss+ny*off;
+    const off=path(ss),hw=Math.max(.12,w*WEIGHT*p/2+(r()-.5)*.1),cx=x0+ux*ss+nx*off,cy=y0+uy*ss+ny*off;
     A.push(q(cx+nx*hw)+' '+q(cy+ny*hw));B.push(q(cx-nx*hw)+' '+q(cy-ny*hw));
     if(ss>=L)break;}
   return 'M'+A.join('L')+'L'+B.reverse().join('L')+'Z';
@@ -46,7 +46,7 @@ function dashes(r,x0,y0,x1,y1,w,dl,gl){const L=Math.hypot(x1-x0,y1-y0);if(L<1)re
   return d;}
 /* freehand circle: ends overlap and drift outward, like a pencil ring */
 function ring(r,cx,cy,rx,ry,w){const a0=r()*6.283,sw=6.283*(1.05+r()*.07),n=Math.max(28,Math.ceil((rx+ry)*1.5)),wb=wave(r,sw,1.1),dr=.35+r()*.5,A=[],B=[];
-  for(let i=0;i<=n;i++){const t=i/n,a=a0+sw*t,k=(wb(sw*t)*.35+dr*t)*ROUGH,p=t<.1?.35+6.5*t:t>.88?.3+.7*(1-t)/.12:1,c=Math.cos(a),s=Math.sin(a),hw=w*p/2,px=cx+c*(rx+k),py=cy+s*(ry+k);
+  for(let i=0;i<=n;i++){const t=i/n,a=a0+sw*t,k=(wb(sw*t)*.35+dr*t)*ROUGH,p=t<.1?.35+6.5*t:t>.88?.3+.7*(1-t)/.12:1,c=Math.cos(a),s=Math.sin(a),hw=w*WEIGHT*p/2,px=cx+c*(rx+k),py=cy+s*(ry+k);
     A.push(q(px+c*hw)+' '+q(py+s*hw));B.push(q(px-c*hw)+' '+q(py-s*hw));}
   return 'M'+A.join('L')+'L'+B.reverse().join('L')+'Z';}
 function sliver(r,x0,y0,x1,y1,w){const dx=x1-x0,dy=y1-y0,L=Math.hypot(dx,dy);if(L<.5)return'';
@@ -79,7 +79,7 @@ function pattern(r,k,W,H,el,P){
     else{let d='';for(let x=g;x<W;x+=g)d+=stroke(r,x,0,x,H,.7,{tilt:.3,land:1,lift:4});for(let y=g;y<H;y+=g)d+=stroke(r,0,y,W,y,.7,{tilt:.3,land:1,lift:4});P.push({d,c:ink,o:.24});}}
   else add(hh({ang:-45+(r()-.5)*2,sp:k==='dense'?4.2:k==='blue'?6:7}),k==='blue'?'var(--blue-500)':ink,.5);
 }
-function pencilEngine(root,rough=1){
+function pencilEngine(root,rough=1,weight=1){
   const hosts=new Map();let alive=true;
   const mine=el=>el.closest('[data-drawing-root]')===root;
   const ro=new ResizeObserver(es=>{for(const e of es){const h=hosts.get(e.target);if(h)draw(e.target,h);}});
@@ -93,7 +93,7 @@ function pencilEngine(root,rough=1){
       const h=hosts.get(t);if(m.attributeName==='data-pencil'&&!t.getAttribute('data-pencil'))drop(t);else if(h)draw(t,h);else if(m.attributeName==='data-pencil'&&mine(t))attach(t);}
     if(again)scan();});
   function draw(el,h){
-    if(!alive||!el.isConnected)return;ROUGH=rough;
+    if(!alive||!el.isConnected)return;ROUGH=rough;WEIGHT=weight;
     const tk=(el.getAttribute('data-pencil')||'').split(/\s+/).filter(Boolean),has=t=>tk.includes(t);
     if(has('svg')||has('grain')){if(el.getAttribute('data-pencil-on')!=='grain')el.setAttribute('data-pencil-on','grain');return;}
     const line=tk.find(t=>/^[hv](-flow|-heavy|-cons)?$/.test(t)),box=tk.find(t=>/^box/.test(t)),rules=['t','r','b','l'].filter(s=>has('rule-'+s)),rg=has('ring')||has('ring-light'),arw=tk.find(t=>/^arrow-[lrud]$/.test(t)),shv=el.style.boxShadow||'',sh=/shadow-plate/.test(shv)?(/plate-blue/.test(shv)?'var(--blue-500)':'var(--ink-1)'):'',
@@ -151,11 +151,12 @@ function pencilEngine(root,rough=1){
 
 const useIsoLayoutEffect=typeof window!=='undefined'?React.useLayoutEffect:React.useEffect;
 export const drawingModeContext=React.createContext('ink');
-export function DrawingMode({mode='ink',lettering='hand',animate=true,handDrawn=true,roughness=1,drawKey,drawOnMount=false,children,style,...rest}){
+export function DrawingMode({mode='ink',lettering='hand',animate=true,handDrawn=true,roughness=1,lineWeight=1,drawKey,drawOnMount=false,children,style,...rest}){
   const ref=React.useRef(null);
   const [shown,setShown]=React.useState(mode);
   const [phase,setPhase]=React.useState(drawOnMount&&animate&&!reduced()?'in':'idle');
   const [flip,setFlip]=React.useState(0);
+  const [epoch,setEpoch]=React.useState(0);
   const mounted=React.useRef(false);
   const run=React.useCallback((swap)=>{
     if(!animate||reduced()){swap&&swap();return;}
@@ -163,12 +164,12 @@ export function DrawingMode({mode='ink',lettering='hand',animate=true,handDrawn=
     return setTimeout(()=>{swap&&swap();setFlip(f=>f+1);setPhase('in');},OUT);
   },[animate]);
   React.useEffect(()=>{if(!mounted.current)return;if(mode===shown)return;const t=run(()=>setShown(mode));return()=>clearTimeout(t);},[mode]);
-  React.useEffect(()=>{if(!mounted.current)return;const t=run();return()=>clearTimeout(t);},[drawKey]);
+  React.useEffect(()=>{if(!mounted.current)return;const t=run(()=>setEpoch(e=>e+1));return()=>clearTimeout(t);},[drawKey]);
   React.useEffect(()=>{mounted.current=true;},[]);
   useIsoLayoutEffect(()=>{
     if(shown!=='pencil'||!handDrawn||!ref.current||typeof ResizeObserver==='undefined'||typeof MutationObserver==='undefined')return;
-    return pencilEngine(ref.current,roughness);
-  },[shown,handDrawn,roughness]);
+    return pencilEngine(ref.current,roughness,lineWeight);
+  },[shown,handDrawn,roughness,lineWeight,epoch]);
   const ab=flip%2?'b':'a';
   const vars=phase==='out'?{'--dg-h':'dg-out-h','--dg-v':'dg-out-v','--dg-s':'dg-out-s','--dg-p':'dg-pout','--dg-dur':OUT-60+'ms','--dg-ease':'cubic-bezier(.6,0,.9,.6)','--dg-k':'.25','--dg-oh':'right center','--dg-ov':'center bottom'}
     :phase==='in'?{'--dg-h':'dg-in-h-'+ab,'--dg-v':'dg-in-v-'+ab,'--dg-s':'dg-in-s-'+ab,'--dg-p':'dg-pin-'+ab,'--dg-dur':'var(--dur-draw)','--dg-ease':'cubic-bezier(.55,.1,.35,1)','--dg-k':'1'}:{};
