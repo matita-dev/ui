@@ -255,6 +255,8 @@ export interface StepperOwn extends Base<HTMLOListElement> {
   steps?: Array<{ label: React.ReactNode; meta?: React.ReactNode }>;
   /** Index of the current step. */
   current?: number;
+  /** 'horizontal' (default) keeps the steps in a row, smaller on narrow screens; 'vertical' stacks them with a line between the markers. */
+  orientation?: 'horizontal' | 'vertical';
 }
 export const Stepper: React.ForwardRefExoticComponent<WithMode<StepperOwn>>;
 

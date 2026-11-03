@@ -70,3 +70,9 @@ test('responsive: widths use min(), long rows wrap or scroll, Stepper and touch 
   assert.ok(css.includes('@media (pointer: coarse) { .m-root { --m-hit: 44px;'));
   assert.ok(css.includes('overflow-wrap:anywhere'));
 });
+
+test('Stepper: vertical puts a line between the markers', () => {
+  const html = renderToStaticMarkup(React.createElement(ui.Stepper, { orientation: 'vertical', current: 1, steps: [{ label: 'a' }, { label: 'b' }, { label: 'c' }] }));
+  assert.equal((html.match(/data-pencil="v-flow"/g) || []).length, 2);
+  assert.ok(!html.includes('h-flow'));
+});
