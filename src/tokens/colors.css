@@ -1,0 +1,20 @@
+:root,[data-mode="ink"]{
+/* Paper — warm drafting-film neutrals (surfaces) */
+--paper-0:#FCFBF8;--paper-1:#F6F4EE;--paper-2:#EEEBE3;--paper-3:#E3DFD4;--paper-4:#D2CDC0;
+/* Ink — graphite (text + linework) */
+--ink-1:#14161B;--ink-2:#353941;--ink-3:#5E626B;--ink-4:#8E919A;--ink-5:#B9BBC1;
+/* Drafting blue — the single brand accent */
+--blue-50:#F0F3FF;--blue-100:#E1E7FF;--blue-200:#C2CEFF;--blue-400:#5C7BFF;--blue-500:#2748F5;--blue-600:#1B35C9;--blue-700:#14279A;
+/* Redline — annotation / markup only */
+--red-100:#FDE6E2;--red-500:#E0442B;--red-600:#B8321D;
+/* Semantic support */
+--green-100:#DDF2E6;--green-500:#1E8A55;--amber-100:#FBEFD2;--amber-500:#C07A0B;
+/* Linework (always drawn in ink at an alpha) */
+--line-strong:#14161B;--line-1:rgba(20,22,27,.22);--line-2:rgba(20,22,27,.14);--line-3:rgba(20,22,27,.08);--line-blue:rgba(39,72,245,.35);
+
+/* Semantic aliases */
+--surface-page:var(--paper-1);--surface-card:var(--paper-0);--surface-sunken:var(--paper-2);--surface-inverse:var(--ink-1);--surface-accent:var(--blue-500);--surface-accent-soft:var(--blue-50);
+--text-primary:var(--ink-1);--text-body:var(--ink-2);--text-muted:var(--ink-3);--text-faint:var(--ink-4);--text-inverse:var(--paper-0);--text-accent:var(--blue-500);--text-redline:var(--red-500);--text-on-accent:#FFFFFF;
+--border-frame:var(--line-strong);--border-default:var(--line-1);--border-subtle:var(--line-2);--border-guide:var(--line-2);--border-focus:var(--blue-500);
+--status-success:var(--green-500);--status-success-bg:var(--green-100);--status-warning:var(--amber-500);--status-warning-bg:var(--amber-100);--status-danger:var(--red-500);--status-danger-bg:var(--red-100);--status-info:var(--blue-500);--status-info-bg:var(--blue-100);
+}

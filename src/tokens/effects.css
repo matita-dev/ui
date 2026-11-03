@@ -1,0 +1,31 @@
+:root,[data-mode="ink"]{
+/* shadows — flat drawing; only hard "plate" offsets + one soft lift for overlays */
+--shadow-none:none;
+--shadow-plate:3px 3px 0 0 var(--ink-1);
+--shadow-plate-blue:3px 3px 0 0 var(--blue-500);
+--shadow-overlay:0 1px 0 var(--line-2),0 12px 32px -12px rgba(20,22,27,.22);
+--focus-ring:0 0 0 2px var(--paper-0),0 0 0 3px var(--blue-500);
+/* patterns (use as background-image) */
+--pattern-grid:linear-gradient(var(--line-3) 1px,transparent 1px),linear-gradient(90deg,var(--line-3) 1px,transparent 1px);
+--pattern-grid-size:var(--grid-cell) var(--grid-cell);/* @kind other */
+--pattern-grid-major:linear-gradient(var(--line-2) 1px,transparent 1px),linear-gradient(90deg,var(--line-2) 1px,transparent 1px);
+--pattern-dots:radial-gradient(circle,var(--line-1) 1px,transparent 1.2px);
+--hatch-45:repeating-linear-gradient(-45deg,var(--line-1) 0 1px,transparent 1px 7px);
+--hatch-45-dense:repeating-linear-gradient(-45deg,var(--line-1) 0 1px,transparent 1px 4px);
+--hatch-cross:repeating-linear-gradient(45deg,var(--line-2) 0 1px,transparent 1px 7px),repeating-linear-gradient(-45deg,var(--line-2) 0 1px,transparent 1px 7px);
+--hatch-blue:repeating-linear-gradient(-45deg,var(--line-blue) 0 1px,transparent 1px 6px);
+/* architectural fills: poché (solid cut), earth, gravel */
+--fill-poche:var(--ink-2);
+--hatch-earth:repeating-linear-gradient(45deg,var(--line-1) 0 1px,transparent 1px 12px),repeating-linear-gradient(45deg,transparent 0 6px,var(--line-2) 6px 7px,transparent 7px 12px);
+--pattern-gravel:radial-gradient(circle at 2px 2px,var(--line-1) .8px,transparent 1.2px),radial-gradient(circle at 6.5px 5px,var(--line-1) .65px,transparent 1px),radial-gradient(circle at 3px 7.5px,var(--line-1) .5px,transparent .9px);
+--pattern-gravel-size:9px 9px;/* @kind other */
+/* dashed guide (as background for 1px-high elements) */
+--guide-h:repeating-linear-gradient(90deg,var(--line-1) 0 4px,transparent 4px 8px);
+--guide-v:repeating-linear-gradient(180deg,var(--line-1) 0 4px,transparent 4px 8px);
+/* drawing-mode hooks (set in tokens/pencil.css) */
+--texture-paper:none;/* @kind other */--construction-length:0px;/* @kind other */--line-construction:transparent;
+/* motion — mechanical, no bounce */
+--ease-draft:cubic-bezier(.2,0,0,1);/* @kind other */--ease-in-out:cubic-bezier(.65,0,.35,1);/* @kind other */
+--dur-fast:120ms;/* @kind other */--dur-base:200ms;/* @kind other */--dur-slow:420ms;/* @kind other */--dur-draw:900ms;/* @kind other */
+--z-nav:50;/* @kind other */--z-overlay:80;/* @kind other */--z-toast:90;/* @kind other */
+}

@@ -1,31 +1,44 @@
 import { withScope } from './provider.jsx';
-import * as C from './controls.js';
+import * as C from './components.js';
 
-export { MatitaProvider, Scope, useMatita, withScope, MODES, GRIDS, DEFAULTS } from './provider.jsx';
-export { Sketch } from './sketch.jsx';
+export { MatitaProvider, Scope, useMatita, withScope, MODES, GRIDS } from './provider.jsx';
+export { DrawingMode, drawingModeContext, drawAnim } from './drawing.jsx';
 export { Tweaks } from './tweaks.jsx';
 
-/* Every component below takes the shared look attributes: mode, stroke, rough (and grid where it has a surface). */
+/* The design system's components, unchanged. Each also accepts `mode` (ink, pencil or blueprint) to render in its own mode. */
 export const Button = withScope(C.Button);
 export const IconButton = withScope(C.IconButton);
+export const Badge = withScope(C.Badge);
+export const Tag = withScope(C.Tag);
+export const Card = withScope(C.Card);
+export const Icon = withScope(C.Icon);
 export const Input = withScope(C.Input);
-export const Checkbox = withScope(C.Checkbox);
-export const Textarea = withScope(C.Textarea);
 export const Select = withScope(C.Select);
+export const Checkbox = withScope(C.Checkbox);
 export const Radio = withScope(C.Radio);
 export const Switch = withScope(C.Switch);
-export const Card = withScope(C.Card);
-export const Divider = withScope(C.Divider);
-export const Badge = withScope(C.Badge);
 export const Tabs = withScope(C.Tabs);
-export const TabList = withScope(C.TabList);
-export const Tab = withScope(C.Tab);
-export const TabPanel = withScope(C.TabPanel);
-export const Tooltip = withScope(C.Tooltip);
+export const Breadcrumb = withScope(C.Breadcrumb);
+export const Pagination = withScope(C.Pagination);
+export const Menu = withScope(C.Menu);
+export const Stepper = withScope(C.Stepper);
+export const Table = withScope(C.Table);
 export const Dialog = withScope(C.Dialog);
+export const Toast = withScope(C.Toast);
+export const Tooltip = withScope(C.Tooltip);
 export const Frame = withScope(C.Frame);
+export const GridRails = withScope(C.GridRails);
 export const CornerMarks = withScope(C.CornerMarks);
 export const Hatch = withScope(C.Hatch);
 export const SectionLabel = withScope(C.SectionLabel);
 export const Dimension = withScope(C.Dimension);
 export const Callout = withScope(C.Callout);
+export const Divider = withScope(C.Divider);
+export const Sheet = withScope(C.Sheet);
+export const TitleBlock = withScope(C.TitleBlock);
+export const ViewTitle = withScope(C.ViewTitle);
+export const ScaleBar = withScope(C.ScaleBar);
+export const NorthArrow = withScope(C.NorthArrow);
+export const LevelMarker = withScope(C.LevelMarker);
+export const DraftProgress = withScope(C.DraftProgress);
+export const PencilMode = C.PencilMode;
