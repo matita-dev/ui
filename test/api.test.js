@@ -60,6 +60,8 @@ test('responsive: widths use min(), long rows wrap or scroll, Stepper and touch 
   assert.match(html(h(ui.Pagination, { count: 9 })), /flex-wrap:wrap/);
   assert.match(html(h(ui.Tabs, { items: ['a', 'b'] })), /overflow-x:auto/);
   assert.match(html(h(ui.Table, { columns: [{ key: 'a' }], rows: [{ a: 1 }] })), /^<div class="m-table-scroll"><table/);
+  const tbl = html(h(ui.Table, { minWidth: 640, columns: [{ key: 'a', minWidth: 180 }], rows: [{ a: 1 }] }));
+  assert.ok(tbl.includes('min-width:640px') && tbl.includes('min-width:180px') && tbl.includes('overflow-wrap:normal'), 'table keeps whole words, takes minWidth');
   assert.match(html(h(ui.Stepper, { steps: [{ label: 'a' }] })), /^<div class="m-stepper/);
   assert.match(html(h(ui.Frame, {}, 'x')), /padding:clamp\(/);
   const css = readFileSync('dist/ui.css', 'utf8');

@@ -259,6 +259,8 @@ export interface TableColumn<Row = any> {
   label?: React.ReactNode;
   align?: 'left' | 'center' | 'right';
   width?: number | string;
+  /** Narrowest the column gets before the table scrolls sideways. */
+  minWidth?: number | string;
   mono?: boolean;
   nowrap?: boolean;
   render?: (row: Row) => React.ReactNode;
@@ -268,6 +270,8 @@ export interface TableOwn<Row = any> extends Base<HTMLTableElement> {
   rows?: Row[];
   /** Property that identifies a row. Default 'id'. */
   rowKey?: string;
+  /** Narrowest the whole table gets before it scrolls sideways (e.g. 640). Words are never split, so columns stop at their longest word. */
+  minWidth?: number | string;
   variant?: 'default' | 'schedule';
   activeKey?: string | number | null;
   onRowHover?: (key: string | number | null) => void;
