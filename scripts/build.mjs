@@ -21,11 +21,4 @@ await build({
 assets('dist');
 copyFileSync('src/index.d.ts', 'dist/index.d.ts');
 
-if (process.argv.includes('--demo')) {
-  await build({
-    entryPoints: { bundle: 'demo/main.jsx', usage: 'demo/usage.jsx' }, outdir: 'demo', bundle: true, format: 'iife', jsx: 'automatic',
-    alias: { '@matita/ui': './src/index.js' },
-  });
-  assets('demo');
-}
 console.log('built');

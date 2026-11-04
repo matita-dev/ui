@@ -18,7 +18,6 @@
   ],
   "scripts": {
     "build": "node scripts/build.mjs",
-    "demo": "node scripts/build.mjs --demo",
     "test": "node --test --test-concurrency=1 && tsc -p test/types"
   },
   "peerDependencies": {
