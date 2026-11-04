@@ -4,8 +4,19 @@ export const Menu=React.forwardRef(function Menu({items=[],onSelect,trigger,alig
   const [open,setOpen]=React.useState(false);const [hov,setHov]=React.useState(null);const ref=React.useRef(null);
   const setRoot=React.useCallback(n=>{ref.current=n;if(typeof fwd==='function')fwd(n);else if(fwd)fwd.current=n;},[fwd]);
   const isOpen=trigger?(openProp??open):true;
+  const items_=()=>[...ref.current.querySelectorAll('[role="menuitem"]:not([disabled])')];
+  const wasOpen=React.useRef(false);
+  React.useEffect(()=>{if(trigger&&isOpen&&!wasOpen.current&&ref.current){const f=items_()[0];f&&f.focus();}wasOpen.current=isOpen;},[isOpen,trigger]);
+  const nav=e=>{
+    const k=e.key;
+    if(k==='Escape'&&trigger){e.stopPropagation();setOpen(false);const w=ref.current.querySelector('[data-menu-trigger]');const t=w&&(w.querySelector('button')||w.querySelector('a[href]')||w.querySelector('[tabindex]'));t&&t.focus();return;}
+    if(!['ArrowDown','ArrowUp','Home','End'].includes(k))return;
+    const f=items_();if(!f.length)return;e.preventDefault();
+    const i=f.indexOf(document.activeElement);
+    f[k==='Home'?0:k==='End'?f.length-1:(i+(k==='ArrowDown'?1:-1)+f.length)%f.length].focus();
+  };
   React.useEffect(()=>{if(!trigger||!open)return;const h=e=>{if(ref.current&&!ref.current.contains(e.target))setOpen(false)};document.addEventListener('mousedown',h);return()=>document.removeEventListener('mousedown',h);},[open,trigger]);
-  const panel=<div ref={trigger?undefined:setRoot} className={trigger?undefined:className} role="menu" data-pencil="box" style={{minWidth:208,padding:4,background:'var(--paper-0)',border:'var(--stroke-frame) solid var(--ink-1)',boxShadow:'var(--shadow-plate)',
+  const panel=<div ref={trigger?undefined:setRoot} className={trigger?undefined:className} role="menu" onKeyDown={nav} data-pencil="box" style={{minWidth:208,padding:4,background:'var(--paper-0)',border:'var(--stroke-frame) solid var(--ink-1)',boxShadow:'var(--shadow-plate)',
     ...(trigger?{position:'absolute',top:'calc(100% + 6px)',[align]:0,zIndex:'var(--z-overlay)'}:{}),...style}}>
     {items.map((it,i)=>it.divider?<div key={i} role="separator" data-pencil="h-flow" style={{height:1,margin:'4px 0',background:'var(--guide-h)'}}/>
       :it.heading?<div key={i} style={{padding:'8px 10px 4px',font:'var(--fw-medium) 10px/1 var(--font-mono)',letterSpacing:'var(--tracking-label)',textTransform:'uppercase',color:'var(--ink-4)'}}>{it.heading}</div>
@@ -18,7 +29,7 @@ export const Menu=React.forwardRef(function Menu({items=[],onSelect,trigger,alig
   </div>;
   if(!trigger) return panel;
   return <div ref={setRoot} className={className} style={{position:'relative',display:'inline-block'}}>
-    <span onClick={()=>setOpen(o=>!o)} aria-haspopup="menu" aria-expanded={isOpen}>{trigger}</span>
+    <span data-menu-trigger="" onClick={()=>setOpen(o=>!o)} onKeyDown={e=>{if(e.key==='ArrowDown'&&!isOpen){e.preventDefault();setOpen(true);}}} aria-haspopup="menu" aria-expanded={isOpen}>{trigger}</span>
     {isOpen&&panel}
   </div>;
 });
