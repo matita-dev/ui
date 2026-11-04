@@ -1,13 +1,13 @@
 import React from 'react';
 import { Icon } from '../core/Icon.jsx';
 const norm=o=>typeof o==='string'?{value:o,label:o}:o;
-/* A listbox, not the browser's <select>: the open list is exactly as wide as the field (long options wrap inside it), flips upward at the
-   bottom edge, and scrolls when it has many options. Keyboard: arrows, Home, End, Enter or Space to pick, Escape, type to jump. */
+/* A listbox, not the browser's <select>: the open list is at least as wide as the field and grows to fit its longest option (like Material UI),
+   up to a cap, beyond which options wrap; it stays inside the viewport (shifts to the field's right edge if needed), flips upward at the bottom edge, and scrolls when it has many options. Keyboard: arrows, Home, End, Enter or Space to pick, Escape, type to jump. */
 export const Select=React.forwardRef(function Select({label,options=[],value,defaultValue,onChange,name,placeholder='Select…',disabled=false,className,style},ref){
   const opts=options.map(norm);
   const [inner,setInner]=React.useState(defaultValue??(value===undefined&&opts[0]?opts[0].value:undefined));
   const cur=value??inner;const idx=opts.findIndex(o=>o.value===cur);
-  const [open,setOpen]=React.useState(false);const [act,setAct]=React.useState(0);const [f,setF]=React.useState(false);const [up,setUp]=React.useState(false);
+  const [open,setOpen]=React.useState(false);const [act,setAct]=React.useState(0);const [f,setF]=React.useState(false);const [up,setUp]=React.useState(false);const [end,setEnd]=React.useState(false);
   const root=React.useRef(null),btn=React.useRef(null),list=React.useRef(null),buf=React.useRef({s:'',t:0});
   const setBtn=React.useCallback(n=>{btn.current=n;if(typeof ref==='function')ref(n);else if(ref)ref.current=n;},[ref]);
   const uid=React.useId(),lid=uid+'l',bid=uid+'b',tid=uid+'t';
@@ -31,8 +31,10 @@ export const Select=React.forwardRef(function Select({label,options=[],value,def
   };
   React.useEffect(()=>{if(!open)return;const h=e=>{if(root.current&&!root.current.contains(e.target))setOpen(false)};document.addEventListener('mousedown',h);return()=>document.removeEventListener('mousedown',h);},[open]);
   /* at the bottom edge the list opens upwards, if there is more room there */
-  React.useLayoutEffect(()=>{if(!open){setUp(false);return;}const p=list.current&&list.current.parentNode,t=btn.current;if(!p||!t)return;const r=p.getBoundingClientRect(),b=t.getBoundingClientRect();if(!r.height)return;
-    setUp(r.bottom>window.innerHeight-8&&b.top-r.height-6>=8);},[open]);
+  React.useLayoutEffect(()=>{if(!open){setUp(false);setEnd(false);return;}const p=list.current&&list.current.parentNode,t=btn.current;if(!p||!t)return;const r=p.getBoundingClientRect(),b=t.getBoundingClientRect();if(!r.height)return;
+    setUp(r.bottom>window.innerHeight-8&&b.top-r.height-6>=8);
+    /* too wide to open rightwards from the field's left edge: align to its right edge instead, when that fits better */
+    setEnd(r.right>window.innerWidth-8&&b.right-r.width>=8);},[open]);
   React.useEffect(()=>{if(open&&list.current){const n=list.current.children[act];n&&n.scrollIntoView&&n.scrollIntoView({block:'nearest'});}},[open,act]);
   const sel=idx>=0?opts[idx]:null;
   return <div ref={root} className={className} style={{display:'flex',flexDirection:'column',gap:8,minWidth:0,...style}}>
@@ -46,7 +48,7 @@ export const Select=React.forwardRef(function Select({label,options=[],value,def
       </button>
       <Icon name="chevron-down" size={16} color="var(--ink-3)" style={{position:'absolute',right:12,top:12,pointerEvents:'none'}}/>
       {name&&<input type="hidden" name={name} value={cur??''}/>}
-      {open&&<div data-pencil="box" style={{position:'absolute',left:0,right:0,zIndex:'var(--z-overlay)',...(up?{bottom:'calc(100% + 6px)'}:{top:'calc(100% + 6px)'}),background:'var(--paper-0)',border:'var(--stroke-frame) solid var(--ink-1)',boxShadow:'var(--shadow-plate)'}}>
+      {open&&<div data-pencil="box" style={{position:'absolute',...(end?{right:0}:{left:0}),minWidth:'100%',width:'max-content',maxWidth:'min(480px,calc(100vw - 16px))',boxSizing:'border-box',zIndex:'var(--z-overlay)',...(up?{bottom:'calc(100% + 6px)'}:{top:'calc(100% + 6px)'}),background:'var(--paper-0)',border:'var(--stroke-frame) solid var(--ink-1)',boxShadow:'var(--shadow-plate)'}}>
         <ul ref={list} id={lid} role="listbox" aria-labelledby={label?tid:bid} style={{margin:0,padding:4,listStyle:'none',maxHeight:'min(280px,45vh)',overflowY:'auto'}}>
           {opts.map((o,i)=><li key={o.value} id={lid+i} role="option" aria-selected={i===idx} onMouseDown={e=>e.preventDefault()} onClick={()=>pick(i)} onMouseEnter={()=>setAct(i)}
             style={{display:'flex',alignItems:'center',gap:10,minHeight:'var(--m-hit-row,34px)',padding:'6px 10px',borderRadius:1,background:i===act?'var(--paper-2)':'transparent',cursor:'pointer',

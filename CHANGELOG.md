@@ -2,6 +2,10 @@
 
 Changes to `@matita/ui`. While the package is on 0.x, a minor version adds components or changes an API and a patch fixes things.
 
+## Unreleased
+
+- **Fixed:** `Select`'s open list was exactly as wide as the field, so in a narrow field options broke into a few characters per line. It is now at least as wide as the field and grows to fit its options (capped at 480px, then wrapping), and stays inside the viewport.
+
 ## 0.1.0 — 2026-11-04
 
 First public release: 35 components in three modes (ink, pencil, blueprint).

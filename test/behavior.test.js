@@ -196,7 +196,7 @@ test('reduced motion: transitions and the spinner switch off', () => {
   assert.ok(css.includes('.m-spinner { animation: none !important'));
 });
 
-test('Select: a listbox as wide as the field; arrows, Enter, Escape, type to jump', async () => {
+test('Select: a listbox at least as wide as the field, growing to fit its options; arrows, Enter, Escape, type to jump', async () => {
   const got = [];
   const { box } = await mount(h(ui.Select, { label: 'Pen', options: ['HB', '2B', { value: 'long', label: 'a very long option label' }, 'Zed'], onChange: v => got.push(v), name: 'pen' }));
   const b = $(box, '[role=combobox]');
@@ -206,7 +206,9 @@ test('Select: a listbox as wide as the field; arrows, Enter, Escape, type to jum
   b.focus(); await key(b, 'ArrowDown');
   assert.equal(b.getAttribute('aria-expanded'), 'true');
   const lb = $(box, '[role=listbox]');
-  assert.match(lb.parentNode.getAttribute('style'), /left:\s*0(px)?;\s*right:\s*0(px)?/);
+  const ps = lb.parentNode.getAttribute('style');
+  assert.match(ps, /min-width:\s*100%/);   // never narrower than the field...
+  assert.match(ps, /width:\s*max-content/); // ...but grows to fit the longest option, like Material UI
   assert.equal(box.querySelectorAll('[role=option]').length, 4);
   await key(b, 'ArrowDown'); await key(b, 'Enter');
   assert.deepEqual(got, ['2B']);
