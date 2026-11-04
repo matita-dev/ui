@@ -229,7 +229,9 @@ test('Pagination: shows as many pages as the width allows, dropping first and la
   try {
     assert.deepEqual(await labels(0), ['01', '…', '19', '20', '21', '…', '40']);   // unmeasured: the default seven
     assert.deepEqual(await labels(400), ['01', '…', '19', '20', '21', '…', '40']);
-    assert.deepEqual(await labels(260), ['01', '…', '20', '…', '40']);               // five slots
+    assert.deepEqual(await labels(300), ['01', '…', '19', '20', '21', '…', '40']);   // 28px squares: still the full seven
+    assert.deepEqual(await labels(260), ['01', '…', '20', '21', '…', '40']);         // six slots
+    assert.deepEqual(await labels(230), ['01', '…', '20', '…', '40']);               // five slots
     assert.deepEqual(await labels(180), ['…', '20', '…']);                           // three: no first or last
   } finally { delete P.clientWidth; delete P.offsetWidth; }
 });
