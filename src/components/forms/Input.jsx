@@ -7,7 +7,7 @@ export function Input({label,hint,error,icon,suffix,size='md',value,defaultValue
   return <label style={{display:'flex',flexDirection:'column',gap:8,minWidth:0,...style}}>
     {label&&<span style={{font:'var(--fw-medium) 11px/1 var(--font-mono)',letterSpacing:'var(--tracking-label)',textTransform:'uppercase',color:'var(--text-muted)'}}>{label}</span>}
     <span data-pencil={error?'box-red':f?'box-blue':'box-light'} style={{display:'flex',alignItems:'center',gap:8,height:h,padding:'0 12px',background:disabled?'var(--paper-2)':'var(--paper-0)',
-      border:'1px solid '+bc,borderRadius:'var(--radius-control)',boxShadow:f?'0 0 0 3px var(--blue-100)':'none',transition:'border-color var(--dur-fast),box-shadow var(--dur-fast)',opacity:disabled?.6:1}}>
+      border:'var(--stroke-frame) solid '+bc,borderRadius:'var(--radius-control)',boxShadow:f?'0 0 0 3px var(--blue-100)':'none',transition:'border-color var(--dur-fast),box-shadow var(--dur-fast)',opacity:disabled?.6:1}}>
       {icon&&<Icon name={icon} size={16} color="var(--ink-3)"/>}
       <input type={type} value={value} defaultValue={defaultValue} placeholder={placeholder} disabled={disabled} onChange={onChange}
         onFocus={()=>setF(true)} onBlur={()=>setF(false)} {...rest}

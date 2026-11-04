@@ -22,7 +22,7 @@ assets('dist');
 
 if (process.argv.includes('--demo')) {
   await build({
-    entryPoints: ['demo/main.jsx'], outfile: 'demo/bundle.js', bundle: true, format: 'iife', jsx: 'automatic',
+    entryPoints: { bundle: 'demo/main.jsx', usage: 'demo/usage.jsx' }, outdir: 'demo', bundle: true, format: 'iife', jsx: 'automatic',
     alias: { '@matita/ui': './src/index.js' },
   });
   assets('demo');

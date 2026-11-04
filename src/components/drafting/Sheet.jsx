@@ -15,7 +15,7 @@ export function Sheet({children,zones=[4,3],inset=6,padding=0,style}){
     <span aria-hidden="true" data-pencil="v-heavy" style={{...edge,top:0,bottom:0,right:0,width:2,...drawAnim('v',120)}}/>
     <span aria-hidden="true" data-pencil="h-heavy" style={{...edge,bottom:0,left:0,right:0,height:2,...drawAnim('h',240)}}/>
     <span aria-hidden="true" data-pencil="v-heavy" style={{...edge,top:0,bottom:0,left:0,width:2,...drawAnim('v',360)}}/>
-    <span aria-hidden="true" data-pencil="box-light" style={{position:'absolute',inset,border:'1px solid var(--line-1)',pointerEvents:'none'}}/>
+    <span aria-hidden="true" data-pencil="box-light" style={{position:'absolute',inset,border:'var(--stroke-frame) solid var(--line-1)',pointerEvents:'none'}}/>
     <span aria-hidden="true">{out}</span>
     <div style={{position:'relative'}}>{children}</div>
   </div>;

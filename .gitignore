@@ -1,4 +1,5 @@
 node_modules/
 dist/
 demo/bundle.js
+demo/usage.js
 demo/ui.css
