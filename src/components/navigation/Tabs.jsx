@@ -1,8 +1,8 @@
 import React from 'react';
-export function Tabs({items=[],value,defaultValue,onChange,variant='underline',numbered=false,style}){
+export const Tabs=React.forwardRef(function Tabs({items=[],value,defaultValue,onChange,variant='underline',numbered=false,className,style},ref){
   const [inner,setInner]=React.useState(defaultValue??(items[0]&&(items[0].id??items[0])));const cur=value??inner;
   const seg=variant==='segmented';
-  return <div role="tablist" data-pencil={seg?'box-light':'rule-b rule-light'} style={{display:'flex',gap:seg?0:28,borderBottom:seg?'none':'var(--stroke-frame) solid var(--line-1)',border:seg?'var(--stroke-frame) solid var(--line-1)':undefined,width:seg?'fit-content':undefined,borderRadius:seg?'var(--radius-1)':0,padding:seg?2:0,background:seg?'var(--paper-0)':'transparent',...style}}>
+  return <div ref={ref} className={className} role="tablist" data-pencil={seg?'box-light':'rule-b rule-light'} style={{display:'flex',gap:seg?0:28,borderBottom:seg?'none':'var(--stroke-frame) solid var(--line-1)',border:seg?'var(--stroke-frame) solid var(--line-1)':undefined,width:seg?'fit-content':undefined,borderRadius:seg?'var(--radius-1)':0,padding:seg?2:0,background:seg?'var(--paper-0)':'transparent',...style}}>
     {items.map((it,i)=>{const id=it.id??it;const lab=it.label??it;const on=id===cur;
       return <button key={id} role="tab" aria-selected={on} data-pencil={on?(seg?'shade':'rule-b'):undefined} onClick={()=>{setInner(id);onChange&&onChange(id)}}
         style={{display:'inline-flex',alignItems:'center',gap:8,background:seg&&on?'var(--ink-1)':'transparent',color:seg?(on?'var(--paper-0)':'var(--ink-3)'):(on?'var(--ink-1)':'var(--ink-3)'),
@@ -13,4 +13,4 @@ export function Tabs({items=[],value,defaultValue,onChange,variant='underline',n
         {it.count!=null&&<span style={{font:'var(--fw-regular) 11px/1 var(--font-mono)',color:'var(--ink-4)'}}>{it.count}</span>}
       </button>;})}
   </div>;
-}
+});

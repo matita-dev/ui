@@ -8,7 +8,7 @@ const V={
   ghost:{bg:'transparent',fg:'var(--ink-1)',bd:'transparent',hbg:'var(--paper-2)'},
   link:{bg:'transparent',fg:'var(--blue-500)',bd:'transparent'}
 };
-export function Button({variant='primary',size='md',icon,iconRight,disabled=false,fullWidth=false,href,onClick,children,style,...rest}){
+export const Button=React.forwardRef(function Button({variant='primary',size='md',icon,iconRight,disabled=false,fullWidth=false,href,onClick,children,className,style,...rest},ref){
   const [hov,setHov]=React.useState(false);const [down,setDown]=React.useState(false);
   const s=SIZES[size]||SIZES.md;const v=V[variant]||V.primary;
   const lift=hov&&!down&&!disabled&&v.plate;
@@ -19,8 +19,8 @@ export function Button({variant='primary',size='md',icon,iconRight,disabled=fals
     opacity:disabled?.4:1,transform:lift?'translate(-2px,-2px)':'none',boxShadow:lift?v.plate:'none',
     transition:'transform var(--dur-fast) var(--ease-draft),box-shadow var(--dur-fast) var(--ease-draft),background var(--dur-fast)',whiteSpace:'nowrap',...style};
   const Tag=href?'a':'button';
-  return <Tag data-pencil={v.pencil} href={href} onClick={disabled?undefined:onClick} disabled={Tag==='button'?disabled:undefined} style={st}
+  return <Tag ref={ref} className={className} data-pencil={v.pencil} href={href} onClick={disabled?undefined:onClick} disabled={Tag==='button'?disabled:undefined} style={st}
     onMouseEnter={()=>setHov(true)} onMouseLeave={()=>{setHov(false);setDown(false)}} onMouseDown={()=>setDown(true)} onMouseUp={()=>setDown(false)} {...rest}>
     {icon&&<Icon name={icon} size={s.ic}/>}{children}{iconRight&&<Icon name={iconRight} size={s.ic}/>}
   </Tag>;
-}
+});
