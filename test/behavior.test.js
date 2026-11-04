@@ -232,7 +232,9 @@ test('Pagination: shows as many pages as the width allows, dropping first and la
     assert.deepEqual(await labels(300), ['01', '…', '19', '20', '21', '…', '40']);   // 28px squares: still the full seven
     assert.deepEqual(await labels(260), ['01', '…', '20', '21', '…', '40']);         // six slots
     assert.deepEqual(await labels(230), ['01', '…', '20', '…', '40']);               // five slots
-    assert.deepEqual(await labels(180), ['…', '20', '…']);                           // three: no first or last
+    assert.deepEqual(await labels(279), ['01', '…', '19', '20', '21', '…', '40']);   // a 320px phone: 2px gaps keep three in the middle
+    assert.deepEqual(await labels(180), ['…', '20', '21', '…']);                     // four: no first or last
+    assert.deepEqual(await labels(150), ['…', '20', '…']);                           // three
   } finally { delete P.clientWidth; delete P.offsetWidth; }
 });
 
