@@ -9,6 +9,7 @@ export const ok = (
     <Tweaks floating />
     <Button ref={btn as any} variant="accent" size="lg" icon="check" className="x" onClick={() => {}} aria-label="save">Save</Button>
     <Button href="/a" mode="blueprint">Link</Button>
+    <Button variant="danger" loading disabled>Delete</Button>
     <Input ref={inp} label="Name" error="Required" size="sm" onChange={e => e.target.value} />
     <Select options={['a', { value: 'b', label: 'B' }]} onChange={e => e.target.value} />
     <Checkbox label="x" onChange={on => on === true} />

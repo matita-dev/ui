@@ -61,7 +61,7 @@ function App() {
         <Section n="02" title="Buttons, tags, badges">
           <Row>
             <Button>Primary</Button><Button variant="accent">Accent</Button><Button variant="secondary">Secondary</Button>
-            <Button variant="ghost">Ghost</Button><Button variant="link">Link</Button><Button disabled>Disabled</Button>
+            <Button variant="ghost">Ghost</Button><Button variant="link">Link</Button><Button disabled>Disabled</Button><Button variant="danger">Delete</Button><Button loading>Saving</Button>
             <Button icon="arrow-right" variant="secondary">With icon</Button>
           </Row>
           <Row><IconButton icon="search" label="Search" /><IconButton icon="settings" label="Settings" variant="primary" /><IconButton icon="x" label="Close" variant="ghost" /><Icon name="ruler" size={24} /></Row>
