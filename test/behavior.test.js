@@ -244,3 +244,20 @@ test('Tabs: a row wider than its space fades the hidden edge and keeps the selec
     assert.equal(t.getAttribute('data-more'), 'end');
   } finally { delete P.clientWidth; delete P.scrollWidth; }
 });
+
+test('Stepper auto: a row, a column when narrow with more than 5 steps or very narrow', async () => {
+  let W = 0;
+  const P = dom.window.HTMLElement.prototype;
+  Object.defineProperty(P, 'clientWidth', { get() { return String(this.className).includes('m-stepper') ? W : 0; }, configurable: true });
+  const steps = n => Array.from({ length: n }, (_, i) => ({ label: 's' + i }));
+  const dir = async (w, n, o) => { W = w; const { box } = await mount(h(ui.Stepper, { steps: steps(n), orientation: o })); return $(box, '[data-pencil=v-flow]') ? 'column' : 'row'; };
+  try {
+    assert.equal(await dir(0, 8), 'row');           // unmeasured
+    assert.equal(await dir(700, 8), 'row');         // wide: any number of steps
+    assert.equal(await dir(320, 5), 'row');         // narrow, 5 steps: smaller row
+    assert.equal(await dir(320, 6), 'column');      // narrow, 6 steps
+    assert.equal(await dir(240, 4), 'column');      // too narrow for any row
+    assert.equal(await dir(700, 3, 'vertical'), 'column');
+    assert.equal(await dir(320, 8, 'horizontal'), 'row');
+  } finally { delete P.clientWidth; }
+});
