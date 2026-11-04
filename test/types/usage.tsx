@@ -11,7 +11,7 @@ export const ok = (
     <Button href="/a" mode="blueprint">Link</Button>
     <Button variant="danger" loading disabled>Delete</Button>
     <Input ref={inp} label="Name" error="Required" size="sm" onChange={e => e.target.value} />
-    <Select options={['a', { value: 'b', label: 'B' }]} onChange={e => e.target.value} />
+    <Select options={['a', { value: 'b', label: 'B' }]} onChange={v => v.toUpperCase()} />
     <Checkbox label="x" onChange={on => on === true} />
     <Tabs items={['a', { id: 'b', label: 'B', count: 2 }]} variant="segmented" onChange={id => id.toUpperCase()} />
     <Table columns={[{ key: 'n', label: 'N', render: (r: { n: number }) => r.n }]} rows={[{ id: 1, n: 1 }]} />

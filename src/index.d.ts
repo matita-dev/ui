@@ -168,12 +168,18 @@ export interface SelectOwn {
   options?: Option[];
   value?: string;
   defaultValue?: string;
-  onChange?: React.ChangeEventHandler<HTMLSelectElement>;
+  /** Called with the chosen option's value. */
+  onChange?: (value: string) => void;
+  /** Posts the value with a form, through a hidden input. */
+  name?: string;
+  /** Shown when no option matches the value. */
+  placeholder?: string;
   disabled?: boolean;
   className?: string;
   style?: React.CSSProperties;
 }
-export const Select: React.ForwardRefExoticComponent<WithMode<SelectOwn> & React.RefAttributes<HTMLSelectElement>>;
+/** A listbox as wide as the field; long options wrap inside it. The ref is the field's button. */
+export const Select: React.ForwardRefExoticComponent<WithMode<SelectOwn> & React.RefAttributes<HTMLButtonElement>>;
 
 export interface CheckboxOwn extends Base<HTMLLabelElement> {
   label?: React.ReactNode;
@@ -249,6 +255,8 @@ export interface StepperOwn extends Base<HTMLOListElement> {
   steps?: Array<{ label: React.ReactNode; meta?: React.ReactNode }>;
   /** Index of the current step. */
   current?: number;
+  /** 'auto' (default) is a row that gets smaller on narrow screens, and a column (with a line between the markers) when the container is under 30rem and there are more than 5 steps, or under 16.5rem. 'horizontal' and 'vertical' force one. */
+  orientation?: 'auto' | 'horizontal' | 'vertical';
 }
 export const Stepper: React.ForwardRefExoticComponent<WithMode<StepperOwn>>;
 
@@ -259,6 +267,8 @@ export interface TableColumn<Row = any> {
   label?: React.ReactNode;
   align?: 'left' | 'center' | 'right';
   width?: number | string;
+  /** Narrowest the column gets before the table scrolls sideways. */
+  minWidth?: number | string;
   mono?: boolean;
   nowrap?: boolean;
   render?: (row: Row) => React.ReactNode;
@@ -268,6 +278,8 @@ export interface TableOwn<Row = any> extends Base<HTMLTableElement> {
   rows?: Row[];
   /** Property that identifies a row. Default 'id'. */
   rowKey?: string;
+  /** Narrowest the whole table gets before it scrolls sideways (e.g. 640). Words are never split, so columns stop at their longest word. */
+  minWidth?: number | string;
   variant?: 'default' | 'schedule';
   activeKey?: string | number | null;
   onRowHover?: (key: string | number | null) => void;

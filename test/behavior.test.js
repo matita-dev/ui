@@ -195,3 +195,73 @@ test('reduced motion: transitions and the spinner switch off', () => {
   assert.ok(css.includes('@media (prefers-reduced-motion: reduce)') && css.includes('transition-duration: .01ms !important'));
   assert.ok(css.includes('.m-spinner { animation: none !important'));
 });
+
+test('Select: a listbox as wide as the field; arrows, Enter, Escape, type to jump', async () => {
+  const got = [];
+  const { box } = await mount(h(ui.Select, { label: 'Pen', options: ['HB', '2B', { value: 'long', label: 'a very long option label' }, 'Zed'], onChange: v => got.push(v), name: 'pen' }));
+  const b = $(box, '[role=combobox]');
+  assert.equal(b.getAttribute('aria-expanded'), 'false');
+  assert.equal(b.textContent, 'HB');
+  assert.equal($(box, 'input[type=hidden]').value, 'HB');
+  b.focus(); await key(b, 'ArrowDown');
+  assert.equal(b.getAttribute('aria-expanded'), 'true');
+  const lb = $(box, '[role=listbox]');
+  assert.match(lb.parentNode.getAttribute('style'), /left:\s*0(px)?;\s*right:\s*0(px)?/);
+  assert.equal(box.querySelectorAll('[role=option]').length, 4);
+  await key(b, 'ArrowDown'); await key(b, 'Enter');
+  assert.deepEqual(got, ['2B']);
+  assert.equal(b.textContent, '2B');
+  assert.equal($(box, '[role=listbox]'), null);
+  await key(b, 'ArrowDown'); await key(b, 'z'); await key(b, 'Enter');
+  assert.deepEqual(got, ['2B', 'Zed']);
+  await key(b, 'ArrowDown'); await key(b, 'Escape');
+  assert.equal($(box, '[role=listbox]'), null);
+  await click(b); const opt = box.querySelectorAll('[role=option]')[2]; await click(opt);
+  assert.deepEqual(got, ['2B', 'Zed', 'long']);
+});
+
+test('Pagination: shows as many pages as the width allows, dropping first and last when very narrow', async () => {
+  let navW = 0;
+  const P = dom.window.HTMLElement.prototype;
+  Object.defineProperty(P, 'clientWidth', { get() { return this.tagName === 'NAV' ? navW : 0; }, configurable: true });
+  Object.defineProperty(P, 'offsetWidth', { get() { return this.tagName === 'BUTTON' ? 32 : 0; }, configurable: true });
+  const labels = async w => { navW = w; const { box } = await mount(h(ui.Pagination, { count: 40, defaultPage: 20 })); return [...box.querySelectorAll('nav > *')].slice(1, -1).map(n => n.textContent); };
+  try {
+    assert.deepEqual(await labels(0), ['01', '…', '19', '20', '21', '…', '40']);   // unmeasured: the default seven
+    assert.deepEqual(await labels(400), ['01', '…', '19', '20', '21', '…', '40']);
+    assert.deepEqual(await labels(300), ['01', '…', '19', '20', '21', '…', '40']);   // 28px squares: still the full seven
+    assert.deepEqual(await labels(260), ['01', '…', '20', '21', '…', '40']);         // six slots
+    assert.deepEqual(await labels(230), ['01', '…', '20', '…', '40']);               // five slots
+    assert.deepEqual(await labels(279), ['01', '…', '19', '20', '21', '…', '40']);   // a 320px phone: 2px gaps keep three in the middle
+    assert.deepEqual(await labels(180), ['…', '20', '21', '…']);                     // four: no first or last
+    assert.deepEqual(await labels(150), ['…', '20', '…']);                           // three
+  } finally { delete P.clientWidth; delete P.offsetWidth; }
+});
+
+test('Tabs: a row wider than its space fades the hidden edge and keeps the selected tab in view', async () => {
+  const P = dom.window.HTMLElement.prototype;
+  Object.defineProperty(P, 'clientWidth', { get() { return this.getAttribute('role') === 'tablist' ? 200 : 0; }, configurable: true });
+  Object.defineProperty(P, 'scrollWidth', { get() { return this.getAttribute('role') === 'tablist' ? 600 : 0; }, configurable: true });
+  try {
+    const { box } = await mount(h(ui.Tabs, { items: ['a', 'b', 'c', 'd', 'e', 'f'] }));
+    const t = $(box, '[role=tablist]');
+    assert.equal(t.getAttribute('data-more'), 'end');
+  } finally { delete P.clientWidth; delete P.scrollWidth; }
+});
+
+test('Stepper auto: a row, a column when narrow with more than 5 steps or very narrow', async () => {
+  let W = 0;
+  const P = dom.window.HTMLElement.prototype;
+  Object.defineProperty(P, 'clientWidth', { get() { return String(this.className).includes('m-stepper') ? W : 0; }, configurable: true });
+  const steps = n => Array.from({ length: n }, (_, i) => ({ label: 's' + i }));
+  const dir = async (w, n, o) => { W = w; const { box } = await mount(h(ui.Stepper, { steps: steps(n), orientation: o })); return $(box, '[data-pencil=v-flow]') ? 'column' : 'row'; };
+  try {
+    assert.equal(await dir(0, 8), 'row');           // unmeasured
+    assert.equal(await dir(700, 8), 'row');         // wide: any number of steps
+    assert.equal(await dir(320, 5), 'row');         // narrow, 5 steps: smaller row
+    assert.equal(await dir(320, 6), 'column');      // narrow, 6 steps
+    assert.equal(await dir(240, 4), 'column');      // too narrow for any row
+    assert.equal(await dir(700, 3, 'vertical'), 'column');
+    assert.equal(await dir(320, 8, 'horizontal'), 'row');
+  } finally { delete P.clientWidth; }
+});
