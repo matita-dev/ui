@@ -4,6 +4,7 @@ Changes to `@matita/ui`. While the package is on 0.x, a minor version adds compo
 
 ## Unreleased
 
+- **CI:** the build and tests now also run against React 19 (the required `test` check is unchanged). Peer range stays `react >=18`.
 - **Fixed:** the hover background of `Button` and `IconButton` in the `ghost` variant was a flat grey box in Hand: Sketchy and in pencil mode. It is now drawn as hand-hatched shading like `Badge`.
 - **Fixed:** `Select`'s open list was exactly as wide as the field, so in a narrow field options broke into a few characters per line. It is now at least as wide as the field and grows to fit its options (capped at 480px, then wrapping), and stays inside the viewport.
 
