@@ -21,7 +21,7 @@ export const Button=React.forwardRef(function Button({variant='primary',size='md
     opacity:disabled?.4:1,transform:lift?'translate(-2px,-2px)':'none',boxShadow:lift?v.plate:'none',
     transition:'transform var(--dur-fast) var(--ease-draft),box-shadow var(--dur-fast) var(--ease-draft),background var(--dur-fast)',...style};
   const Tag=href?'a':'button';
-  return <Tag ref={ref} className={className} data-pencil={v.pencil} href={disabled?undefined:href} onClick={off?e=>e.preventDefault():onClick} disabled={Tag==='button'?disabled:undefined} aria-disabled={Tag==='a'&&disabled||loading?true:undefined} aria-busy={loading||undefined} tabIndex={Tag==='a'&&disabled?-1:undefined} role={Tag==='a'&&disabled?'link':undefined} style={st}
+  return <Tag ref={ref} className={className} data-pencil={v.pencil||(variant==='ghost'&&hov&&!off?'tint':undefined)}href={disabled?undefined:href} onClick={off?e=>e.preventDefault():onClick} disabled={Tag==='button'?disabled:undefined} aria-disabled={Tag==='a'&&disabled||loading?true:undefined} aria-busy={loading||undefined} tabIndex={Tag==='a'&&disabled?-1:undefined} role={Tag==='a'&&disabled?'link':undefined} style={st}
     onMouseEnter={()=>setHov(true)} onMouseLeave={()=>{setHov(false);setDown(false)}} onMouseDown={()=>setDown(true)} onMouseUp={()=>setDown(false)} {...rest}>
     {loading?<span className="m-spinner" aria-hidden="true" style={{width:s.ic,height:s.ic}}/>:icon&&<Icon name={icon} size={s.ic}/>}{children}{iconRight&&<Icon name={iconRight} size={s.ic}/>}
   </Tag>;
